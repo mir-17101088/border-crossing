@@ -1,0 +1,1165 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Traces in the Dark: The Alikadam Infiltration Corridor</title>
+
+  <meta name="description"
+    content="An interactive map tracing a documented Rohingya border-crossing route from the zero-line near Fatra Para down to Alikadam Bazar.">
+  <meta name="author" content="Mir">
+  <meta name="robots" content="noindex">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap"
+    rel="stylesheet">
+
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+    integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+
+  <style>
+    :root {
+      --accent: #f59e0b;
+      --accent-soft: rgba(245, 158, 11, 0.30);
+      --reference: #38bdf8;
+      --ink-deep: #030712;
+      --card-bg: rgba(9, 13, 26, 0.86);
+      --card-border: rgba(51, 65, 85, 0.55);
+      --text: #e2e8f0;
+      --text-dim: #94a3b8;
+      --text-faint: #64748b;
+      --card-pad-left: 3rem;
+      --t-fast: 200ms;
+      --t-card: 520ms;
+      --ease: cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+      background: var(--ink-deep);
+      color: var(--text);
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+      scrollbar-width: thin;
+      scrollbar-color: var(--accent-soft) rgba(9, 13, 26, 0.5);
+    }
+
+    ::-webkit-scrollbar {
+      width: 4px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: rgba(9, 13, 26, 0.5);
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: var(--accent-soft);
+      border-radius: 2px;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+      background: var(--accent);
+    }
+
+    /* ===== MAP ===== */
+    #map {
+      position: fixed;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 0;
+      background: var(--ink-deep);
+    }
+
+    .leaflet-tile-pane {
+      filter: contrast(1.12) saturate(0.92) brightness(0.94);
+    }
+
+    .leaflet-container {
+      background: var(--ink-deep);
+      font-family: inherit;
+    }
+
+    .active-neon-path {
+      filter: drop-shadow(0 1px 3px rgba(0, 0, 0, 0.85)) drop-shadow(0 0 7px var(--accent-soft));
+      stroke-linejoin: round;
+      stroke-linecap: round;
+    }
+
+    /* ===== MARKERS ===== */
+    .custom-marker {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .mk-dot {
+      position: relative;
+      width: 9px;
+      height: 9px;
+      background: var(--accent);
+      border: 2px solid var(--ink-deep);
+      border-radius: 50%;
+      box-shadow: 0 0 8px rgba(245, 158, 11, 0.75);
+      transition: width var(--t-card) var(--ease), height var(--t-card) var(--ease),
+        border var(--t-card) var(--ease), box-shadow var(--t-card) var(--ease);
+    }
+
+    .mk-pulse {
+      position: absolute;
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      background: rgba(245, 158, 11, 0.40);
+      transform: scale(0);
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .mk-num {
+      position: absolute;
+      inset: 0;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 9px;
+      font-weight: 700;
+      color: #190f02;
+    }
+
+    .mk-label {
+      position: absolute;
+      left: 50%;
+      bottom: 18px;
+      transform: translate(-50%, 6px);
+      white-space: nowrap;
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      padding: 3px 8px;
+      border-radius: 6px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 9.5px;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      color: var(--text);
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.45);
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity var(--t-card) var(--ease), transform var(--t-card) var(--ease);
+    }
+
+    .custom-marker.active .mk-dot {
+      width: 16px;
+      height: 16px;
+      border: 3px solid #fff;
+      box-shadow: 0 0 18px rgba(245, 158, 11, 1);
+    }
+
+    .custom-marker.active .mk-pulse {
+      animation: pulse-ring 2.2s cubic-bezier(0.215, 0.61, 0.355, 1) infinite;
+    }
+
+    .custom-marker.active .mk-label {
+      opacity: 1;
+      transform: translate(-50%, 0);
+    }
+
+    @keyframes pulse-ring {
+      0% {
+        transform: scale(0.25);
+        opacity: 0.8;
+      }
+
+      80%,
+      100% {
+        transform: scale(2.2);
+        opacity: 0;
+      }
+    }
+
+    /* Overview mode: show numbered badges on every point, hide name labels */
+    body.is-overview .mk-dot {
+      width: 17px;
+      height: 17px;
+      border: 2px solid #fff;
+      box-shadow: 0 0 10px rgba(245, 158, 11, 0.9);
+    }
+
+    body.is-overview .mk-num {
+      display: flex;
+    }
+
+    body.is-overview .mk-label {
+      opacity: 0 !important;
+    }
+
+    body.is-overview .custom-marker.active .mk-pulse {
+      animation: none;
+    }
+
+    /* ===== HUD ===== */
+    .top-progress {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: rgba(3, 7, 18, 0.8);
+      z-index: 50;
+      pointer-events: none;
+    }
+
+    #progress-bar {
+      height: 100%;
+      width: 0;
+      background: var(--accent);
+      transition: width var(--t-fast) linear;
+    }
+
+    .hud {
+      position: fixed;
+      top: 14px;
+      left: 14px;
+      z-index: 40;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      max-width: min(280px, 60vw);
+      pointer-events: none;
+    }
+
+    .panel {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 12px;
+    }
+
+    .brand .live-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--accent);
+      animation: blink 1.8s ease-in-out infinite;
+      flex-shrink: 0;
+    }
+
+    @keyframes blink {
+
+      0%,
+      100% {
+        opacity: 1;
+      }
+
+      50% {
+        opacity: 0.25;
+      }
+    }
+
+    .brand .title {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: 0.18em;
+      color: var(--text-dim);
+      text-transform: uppercase;
+      line-height: 1.3;
+    }
+
+    .legend {
+      padding: 9px 11px;
+    }
+
+    .legend .legend-head {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 8px;
+      letter-spacing: 0.18em;
+      color: var(--text-faint);
+      text-transform: uppercase;
+      margin-bottom: 6px;
+      padding-bottom: 5px;
+      border-bottom: 1px solid rgba(51, 65, 85, 0.5);
+    }
+
+    .legend .row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 9px;
+      color: var(--text-dim);
+      line-height: 1.9;
+    }
+
+    .legend .swatch {
+      width: 22px;
+      height: 0;
+      flex-shrink: 0;
+    }
+
+    .legend .swatch.border {
+      border-top: 2px solid #fff;
+    }
+
+    .legend .swatch.active {
+      border-top: 3px solid var(--accent);
+    }
+
+    .legend .swatch.ref {
+      border-top: 2px dashed rgba(56, 189, 248, 0.6);
+    }
+
+    /* ===== CONTROLS ===== */
+    .ctrl-btn {
+      width: 34px;
+      height: 34px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      color: var(--text);
+      border-radius: 9px;
+      font-family: 'Inter', sans-serif;
+      font-size: 18px;
+      font-weight: 500;
+      line-height: 1;
+      cursor: pointer;
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.4);
+      transition: background var(--t-fast), border-color var(--t-fast), color var(--t-fast), opacity var(--t-fast), transform 90ms;
+      -webkit-tap-highlight-color: transparent;
+      padding: 0;
+    }
+
+    .ctrl-btn:hover {
+      background: rgba(245, 158, 11, 0.16);
+      border-color: rgba(245, 158, 11, 0.55);
+      color: #fff;
+    }
+
+    .ctrl-btn:active {
+      transform: scale(0.92);
+    }
+
+    .ctrl-btn:disabled {
+      opacity: 0.3;
+      cursor: default;
+      pointer-events: none;
+    }
+
+    .ctrl-btn svg {
+      width: 18px;
+      height: 18px;
+      display: block;
+    }
+
+    .map-controls {
+      position: fixed;
+      top: 14px;
+      right: 14px;
+      z-index: 41;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .nav-controls {
+      position: fixed;
+      right: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      z-index: 41;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    /* ===== STORY TRACK ===== */
+    #story-track {
+      position: relative;
+      z-index: 10;
+      width: 100%;
+    }
+
+    .story-section {
+      width: 100%;
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      padding: 0 1rem 0 var(--card-pad-left);
+      pointer-events: none;
+    }
+
+    .story-card-wrapper {
+      width: 100%;
+      max-width: clamp(300px, 46vw, 400px);
+      pointer-events: auto;
+    }
+
+    .story-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      padding: 22px 24px;
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      box-shadow: 0 18px 40px rgba(0, 0, 0, 0.45);
+      opacity: 0.4;
+      transform: scale(0.96);
+      transition: opacity var(--t-card) var(--ease), transform var(--t-card) var(--ease),
+        border-color var(--t-card) var(--ease), box-shadow var(--t-card) var(--ease);
+    }
+
+    .story-card.is-active {
+      opacity: 1;
+      transform: scale(1);
+      border-color: rgba(245, 158, 11, 0.5);
+      box-shadow: 0 18px 44px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(245, 158, 11, 0.28);
+    }
+
+    .story-card .eyebrow {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 9.5px;
+      font-weight: 700;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 6px;
+    }
+
+    .story-card h2 {
+      margin: 0 0 8px;
+      font-size: 18px;
+      font-weight: 700;
+      line-height: 1.25;
+      color: #fff;
+    }
+
+    .story-card p {
+      margin: 0;
+      font-size: 13.5px;
+      font-weight: 300;
+      line-height: 1.65;
+      color: var(--text);
+    }
+
+    /* Intro cover card (centred) */
+    .story-section.intro {
+      align-items: center;
+      justify-content: center;
+      padding: 0 16px;
+    }
+
+    .story-section.intro .story-card-wrapper {
+      max-width: 440px;
+    }
+
+    .intro-card {
+      text-align: center;
+    }
+
+    .intro-card h1 {
+      margin: 4px 0 10px;
+      font-size: 27px;
+      font-weight: 800;
+      line-height: 1.15;
+      letter-spacing: -0.01em;
+      color: #fff;
+    }
+
+    .intro-card p {
+      font-size: 13.5px;
+      color: var(--text-dim);
+    }
+
+    .intro-card .scroll-hint {
+      margin-top: 16px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--accent);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .intro-card .scroll-hint svg {
+      width: 12px;
+      height: 12px;
+      animation: bob 1.8s ease-in-out infinite;
+    }
+
+    @keyframes bob {
+
+      0%,
+      100% {
+        transform: translateY(0);
+      }
+
+      50% {
+        transform: translateY(3px);
+      }
+    }
+
+    /* Outro route list */
+    .outro-card h2 {
+      margin-bottom: 12px;
+    }
+
+    .route-list {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+      columns: 2;
+      column-gap: 16px;
+    }
+
+    .route-list li {
+      display: flex;
+      align-items: baseline;
+      gap: 7px;
+      font-size: 12px;
+      line-height: 1.5;
+      color: var(--text);
+      margin-bottom: 4px;
+      break-inside: avoid;
+    }
+
+    .route-list li b {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      color: var(--accent);
+      min-width: 15px;
+    }
+
+    .scroll-buffer {
+      width: 100%;
+      height: 9vh;
+      pointer-events: none;
+    }
+
+    /* ===== MOBILE (<700px) ===== */
+    @media (max-width: 699.98px) {
+      .story-section {
+        align-items: flex-end;
+        justify-content: center;
+        padding: 0 14px 9vh;
+      }
+
+      .story-card-wrapper {
+        max-width: 560px;
+      }
+
+      .story-card {
+        padding: 18px 18px;
+        border-radius: 14px;
+      }
+
+      .story-card h2 {
+        font-size: 16.5px;
+      }
+
+      .story-card p {
+        font-size: 13px;
+        line-height: 1.6;
+      }
+
+      .story-section.intro {
+        align-items: center;
+        justify-content: center;
+        padding: 0 16px;
+      }
+
+      .intro-card h1 {
+        font-size: 23px;
+      }
+
+      .mk-label {
+        font-size: 9px;
+        letter-spacing: 0.03em;
+        padding: 3px 7px;
+      }
+
+      .hud {
+        max-width: 58vw;
+        gap: 5px;
+      }
+
+      .brand {
+        padding: 7px 10px;
+      }
+
+      .brand .title {
+        font-size: 8px;
+        letter-spacing: 0.14em;
+      }
+
+      .legend .row.ref-row {
+        display: none;
+      }
+
+      .legend {
+        padding: 7px 9px;
+      }
+
+      .ctrl-btn {
+        width: 32px;
+        height: 32px;
+        font-size: 17px;
+      }
+
+      .ctrl-btn svg {
+        width: 16px;
+        height: 16px;
+      }
+
+      .route-list {
+        font-size: 11.5px;
+      }
+    }
+
+    @media (max-width: 380px) {
+      .hud .legend {
+        display: none;
+      }
+
+      .route-list {
+        column-gap: 12px;
+        font-size: 11px;
+      }
+
+      .route-list li b {
+        min-width: 13px;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      html {
+        scroll-behavior: auto;
+      }
+
+      .story-card,
+      .mk-dot,
+      .mk-label {
+        transition-duration: 1ms;
+      }
+
+      .custom-marker.active .mk-pulse,
+      .intro-card .scroll-hint svg,
+      .brand .live-dot {
+        animation: none;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <div id="map" role="img" aria-label="Satellite map of the Alikadam infiltration corridor, Bandarban, Bangladesh.">
+  </div>
+
+  <div class="top-progress">
+    <div id="progress-bar"></div>
+  </div>
+
+  <div class="hud">
+    <div class="panel brand"><span class="live-dot"></span><span class="title">Alikadam Infiltration Corridor</span>
+    </div>
+    <div class="panel legend" aria-hidden="true">
+      <div class="legend-head">Map Key</div>
+      <div class="row"><span class="swatch border"></span><span>BD–Myanmar border</span></div>
+      <div class="row"><span class="swatch active"></span><span>Active transit path</span></div>
+      <div class="row ref-row"><span class="swatch ref"></span><span>Total corridor ref.</span></div>
+    </div>
+  </div>
+
+  <div class="map-controls" role="group" aria-label="Map zoom">
+    <button id="zoom-in" class="ctrl-btn" type="button" aria-label="Zoom in" title="Zoom in">+</button>
+    <button id="zoom-out" class="ctrl-btn" type="button" aria-label="Zoom out" title="Zoom out">&#8722;</button>
+  </div>
+
+  <div class="nav-controls" role="group" aria-label="Step navigation">
+    <button id="nav-prev" class="ctrl-btn" type="button" aria-label="Previous" title="Previous">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"
+        stroke-linejoin="round" aria-hidden="true">
+        <path d="M6 15l6-6 6 6" />
+      </svg>
+    </button>
+    <button id="nav-next" class="ctrl-btn" type="button" aria-label="Next" title="Next">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"
+        stroke-linejoin="round" aria-hidden="true">
+        <path d="M6 9l6 6 6-6" />
+      </svg>
+    </button>
+  </div>
+
+  <main id="story-track">
+
+    <!-- INTRO OVERVIEW -->
+    <section class="story-section intro" data-scene="0">
+      <div class="story-card-wrapper">
+        <article class="story-card intro-card">
+          <div class="eyebrow">Border Crossing</div>
+          <h1>The Alikadam Corridor</h1>
+          <p>A documented Rohingya infiltration route — eleven waypoints from the zero-line on the Myanmar border down
+            to Alikadam Bazar.</p>
+          <span class="scroll-hint">Scroll
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"
+              stroke-linejoin="round">
+              <path d="M6 9l6 6 6-6" />
+            </svg>
+          </span>
+        </article>
+      </div>
+    </section>
+
+    <!-- STEPS -->
+    <section class="story-section" data-scene="1">
+      <div class="story-card-wrapper">
+        <article class="story-card">
+          <div class="eyebrow">Border Village</div>
+          <h2>Silence at Fatra Para</h2>
+          <p>By 8:25pm on May 20, Fatra Para had fallen silent. The Mro village, tucked into the hills of Bandarban's
+            Alikadam upazila less than a kilometre from the Myanmar border, had shut down for the night. On a hillside
+            below, faint torch-beams emerged along the stream bed — three women in front, followed by a silent line of
+            men.</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="story-section" data-scene="2">
+      <div class="story-card-wrapper">
+        <article class="story-card">
+          <div class="eyebrow">The Descent</div>
+          <h2>Descending to Jurum Jhiri</h2>
+          <p>The journey begins before nightfall on the Myanmar side. Rohingya groups gather quietly on hilltops near
+            border pillars 59 to 61. Once darkness thickens across the forest, they descend a steep ridge and cross the
+            stream at Jurum Jhiri to enter Bangladesh.</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="story-section" data-scene="3">
+      <div class="story-card-wrapper">
+        <article class="story-card">
+          <div class="eyebrow">Wet Transit</div>
+          <h2>The Muddy Waters of Fatra Jhiri</h2>
+          <p>Moving in absolute silence, it takes about an hour to reach Fatra Jhiri. This stretch is grueling. The
+            stream is muddy and waist-deep in places, forcing travellers to remove their shoes and carry them, risking
+            cuts from stones and roots.</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="story-section" data-scene="4">
+      <div class="story-card-wrapper">
+        <article class="story-card">
+          <div class="eyebrow">Physical Exhaustion</div>
+          <h2>Exhaustion at Pahar Bhanga</h2>
+          <p>After wading through the water, the groups push towards Pahar Bhanga near the Matamuhuri River, roughly
+            five kilometres from the border. By this point, travellers are completely soaked and exhausted.</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="story-section" data-scene="5">
+      <div class="story-card-wrapper">
+        <article class="story-card">
+          <div class="eyebrow">Forest Cover</div>
+          <h2>Safe Haven at Shindhu Mukh</h2>
+          <p>In the early hours, they reach Shindhu Mukh, a remote riverside area. They wait here because they can watch
+            for movement — if they sense anyone approaching, they vanish into the forest canopy where security forces
+            rarely go at night.</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="story-section" data-scene="6">
+      <div class="story-card-wrapper">
+        <article class="story-card">
+          <div class="eyebrow">The Roadway</div>
+          <h2>Dori Para: The Paved Road</h2>
+          <p>At first light, the journey resumes. Some change into dry clothes before heading towards Dori Para, where
+            the paved road begins. From here, motorcycles pick them up in stages to begin the 40km trip towards Alikadam
+            Bazar.</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="story-section" data-scene="7">
+      <div class="story-card-wrapper">
+        <article class="story-card">
+          <div class="eyebrow">Surveillance Barrier</div>
+          <h2>Poamuhuri Checkpoint Evasion</h2>
+          <p>At the Poamuhuri BGB checkpoint, a motorbike carrying two Rohingya passengers slows but does not stop.
+            Following a brief verbal declaration to a guard on duty, the bike is waved through without further
+            screening.</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="story-section" data-scene="8">
+      <div class="story-card-wrapper">
+        <article class="story-card">
+          <div class="eyebrow">Bypass Road</div>
+          <h2>The Footpaths of Mendon Para</h2>
+          <p>Near an army post at Mendon Para, passengers get off before the checkpoint. They take a narrow hill path
+            running alongside the main road to evade detection. The motorcycle crosses the post completely empty and
+            picks them up on the other side.</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="story-section" data-scene="9">
+      <div class="story-card-wrapper">
+        <article class="story-card">
+          <div class="eyebrow">Security Gap</div>
+          <h2>Krilai Para Surveillance Gap</h2>
+          <p>The next barrier is the Krilai Para BGB post. In the field, a lone guard on duty — speaking on a phone —
+            simply waves transport vehicles through without performing identity or security checks.</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="story-section" data-scene="10">
+      <div class="story-card-wrapper">
+        <article class="story-card">
+          <div class="eyebrow">Urban Bypass</div>
+          <h2>The Final Detour</h2>
+          <p>Instead of approaching the final army checkpoint outside Alikadam Bazar via the main road, passengers exit
+            the vehicles early to bypass the tracking cordon on foot.</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="story-section" data-scene="11">
+      <div class="story-card-wrapper">
+        <article class="story-card">
+          <div class="eyebrow">Terminal Point</div>
+          <h2>Arrival at Alikadam Bazar</h2>
+          <p>Passengers cross through Nayapara and Mongcha Para before wading over the Matamuhuri River a final time.
+            Once clear of the cordon, they disappear into Alikadam Bazar, taking up low-paid, unnegotiable labour in
+            local markets, tea stalls, and construction sites.</p>
+        </article>
+      </div>
+    </section>
+
+    <!-- OUTRO OVERVIEW -->
+    <section class="story-section" data-scene="12">
+      <div class="story-card-wrapper">
+        <article class="story-card outro-card">
+          <div class="eyebrow">The Full Route</div>
+          <h2>Eleven waypoints, ~38&nbsp;km</h2>
+          <ol class="route-list">
+            <li><b>01</b><span>Fatra Para</span></li>
+            <li><b>02</b><span>Jurum Jhiri</span></li>
+            <li><b>03</b><span>Fatra Jhiri</span></li>
+            <li><b>04</b><span>Pahar Bhanga</span></li>
+            <li><b>05</b><span>Shindhu Mukh</span></li>
+            <li><b>06</b><span>Dori Para</span></li>
+            <li><b>07</b><span>Poamuhuri BGB</span></li>
+            <li><b>08</b><span>Mendon Para</span></li>
+            <li><b>09</b><span>Krilai Para BGB</span></li>
+            <li><b>10</b><span>Alikadam Bazar</span></li>
+            <li><b>11</b><span>Mongcha Para</span></li>
+          </ol>
+        </article>
+      </div>
+    </section>
+
+    <div class="scroll-buffer"></div>
+  </main>
+
+  <script>
+    (function () {
+      "use strict";
+
+      /* ---------- DATA (full-precision KML, Powamuhuri 2 excluded) ---------- */
+      const storyData = [
+        { title: "Fatra Para", coordinates: [21.37854971886697, 92.49390798525721], zoom: 15.5 },
+        { title: "Jurum Jhiri", coordinates: [21.38160593891465, 92.49921783733319], zoom: 15.5 },
+        { title: "Fatra Jhiri", coordinates: [21.38943626284207, 92.49723934768053], zoom: 15.3 },
+        { title: "Pahar Bhanga", coordinates: [21.39995198690763, 92.49494924434197], zoom: 14.6 },
+        { title: "Shindhu Mukh", coordinates: [21.43096814003957, 92.47245247995323], zoom: 14.0 },
+        { title: "Dori Para", coordinates: [21.45676601164372, 92.45453420556284], zoom: 14.0 },
+        { title: "Poamuhuri BGB Checkpoint", coordinates: [21.46788877604238, 92.41941102957639], zoom: 13.4 },
+        { title: "Mendon Para Army Post", coordinates: [21.54120837131384, 92.39942283510649], zoom: 13.0 },
+        { title: "Krilai Para BGB Post", coordinates: [21.55691272414940, 92.38812766072461], zoom: 13.0 },
+        { title: "Alikadam Bazar Checkpost", coordinates: [21.64423466940239, 92.31235817707524], zoom: 13.4 },
+        { title: "Mongcha Para", coordinates: [21.64883301228137, 92.30339117324041], zoom: 14.4 }
+      ];
+      const routeCoords = storyData.map(s => s.coordinates);
+      const N = storyData.length;
+
+      /* scene list: 0 = intro overview, 1..11 = points, 12 = outro overview */
+      const scenes = [{ type: 'overview', variant: 'intro' }];
+      storyData.forEach((_, i) => scenes.push({ type: 'point', point: i }));
+      scenes.push({ type: 'overview', variant: 'outro' });
+
+      const MOBILE_BREAKPOINT = 700;
+      const NAV_RESERVE = 64;
+      const MOBILE_MARKER_TOP = 0.18;
+      const LINE_TAU = 240;   // ms — line-reveal easing (runs only when camera is settled)
+      const OVERVIEW_MAXZOOM = 12.6;
+      const prefersReduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      const isMobile = () => window.innerWidth < MOBILE_BREAKPOINT;
+
+      /* ---------- MAP (native flyTo only — never per-frame setView) ---------- */
+      const map = L.map('map', {
+        zoomControl: false, attributionControl: true,
+        scrollWheelZoom: false, doubleClickZoom: false, touchZoom: false,
+        boxZoom: false, keyboard: false, dragging: false,
+        zoomSnap: 0, zoomDelta: 0.5, minZoom: 10, maxZoom: 17
+      }).setView(storyData[0].coordinates, 12);
+
+      const TILE_TEMPLATES = [
+        'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
+        'https://server.arcgisonline.com/ArcGIS/rest/services/Reference/World_Boundaries_and_Places/MapServer/tile/{z}/{y}/{x}'
+      ];
+      const tileOpts = { maxZoom: 18, crossOrigin: true, keepBuffer: 4, updateWhenZooming: false };
+      L.tileLayer(TILE_TEMPLATES[0], Object.assign({ attribution: 'Imagery &copy; Esri, Maxar, Earthstar Geographics' }, tileOpts)).addTo(map);
+      L.tileLayer(TILE_TEMPLATES[1], tileOpts).addTo(map);
+
+      L.polyline(routeCoords, { color: '#38bdf8', weight: 1.5, opacity: 0.4, dashArray: '3, 6', lineCap: 'round', lineJoin: 'round', interactive: false }).addTo(map);
+      const activePath = L.polyline([], { color: '#f59e0b', weight: 3.5, opacity: 0.95, className: 'active-neon-path', interactive: false }).addTo(map);
+
+      const markers = storyData.map((step, i) => L.marker(step.coordinates, {
+        icon: L.divIcon({
+          className: 'custom-marker',
+          html: '<div class="mk-pulse"></div><div class="mk-dot"><span class="mk-num">' + (i + 1) + '</span></div>' +
+            '<div class="mk-label">' + step.title + '</div>',
+          iconSize: [22, 22], iconAnchor: [11, 11]
+        }), keyboard: false, interactive: false
+      }).addTo(map));
+
+      const overviewBounds = L.latLngBounds(routeCoords);
+
+      /* ---------- ROUTE LENGTH MODEL ---------- */
+      const cumMeters = [0];
+      for (let i = 1; i < N; i++) cumMeters[i] = cumMeters[i - 1] + map.distance(routeCoords[i - 1], routeCoords[i]);
+      const totalMeters = cumMeters[N - 1];
+
+      function buildPath(len) {
+        if (len <= 0) return [];
+        const pts = [routeCoords[0]];
+        let i = 1;
+        for (; i < N; i++) { if (cumMeters[i] <= len) pts.push(routeCoords[i]); else break; }
+        if (i < N) {
+          const f = (len - cumMeters[i - 1]) / (cumMeters[i] - cumMeters[i - 1]);
+          const a = routeCoords[i - 1], b = routeCoords[i];
+          pts.push([a[0] + (b[0] - a[0]) * f, a[1] + (b[1] - a[1]) * f]);
+        }
+        return pts.length >= 2 ? pts : [];
+      }
+
+      /* ---------- ADAPTIVE CENTRING (point scenes) ---------- */
+      let cardRightPx = 360;
+      function measureCard() {
+        const w = document.querySelector('.story-section[data-scene="1"] .story-card-wrapper');
+        if (w) { const r = w.getBoundingClientRect(); if (r.width) cardRightPx = r.right; }
+      }
+      function focusToCenter(lat, lng, zoom) {
+        const size = map.getSize();
+        const pt = map.project([lat, lng], zoom);
+        if (isMobile()) pt.y += size.y * MOBILE_MARKER_TOP;             // marker → upper third
+        else pt.x -= ((cardRightPx + (size.x - NAV_RESERVE)) / 2) - size.x / 2;
+        return map.unproject(pt, zoom);
+      }
+
+      /* ---------- TILE PRELOAD (warm cache so scrolling never "loads") ---------- */
+      const preloaded = new Set();
+      function preloadTile(z, x, y) {
+        const max = Math.pow(2, z);
+        if (y < 0 || y >= max) return;
+        x = ((x % max) + max) % max;
+        TILE_TEMPLATES.forEach(t => {
+          const url = t.replace('{z}', z).replace('{x}', x).replace('{y}', y);
+          if (preloaded.has(url)) return;
+          preloaded.add(url);
+          const img = new Image();
+          img.crossOrigin = 'anonymous';
+          if ('fetchPriority' in img) img.fetchPriority = 'low';
+          img.decoding = 'async';
+          img.src = url;
+        });
+      }
+      function preloadView(lat, lng, zoom, r) {
+        const z = Math.round(Math.max(map.getMinZoom(), Math.min(map.getMaxZoom(), zoom)));
+        const p = map.project([lat, lng], z);
+        const tx = Math.floor(p.x / 256), ty = Math.floor(p.y / 256);
+        for (let dx = -r; dx <= r; dx++) for (let dy = -r; dy <= r; dy++) preloadTile(z, tx + dx, ty + dy);
+      }
+      function preloadScene(i) {
+        const sc = scenes[i]; if (!sc) return;
+        if (sc.type === 'point') { const s = storyData[sc.point]; preloadView(s.coordinates[0], s.coordinates[1], s.zoom, 2); }
+        else { const c = overviewBounds.getCenter(); preloadView(c.lat, c.lng, map.getBoundsZoom(overviewBounds, false), 2); }
+      }
+      function preloadNeighbors() { preloadScene(currentScene + 1); preloadScene(currentScene - 1); }
+
+      /* ---------- LINE LOOP (geometry updates only while camera is settled) ---------- */
+      let lineLen = 0, targetLen = 0, flying = false, lineRAF = null, lastT = 0;
+      function drawLine() { activePath.setLatLngs(buildPath(lineLen)); }
+      function ensureLineLoop() { if (lineRAF === null) { lastT = performance.now(); lineRAF = requestAnimationFrame(lineFrame); } }
+      function lineFrame(now) {
+        if (flying) { lineRAF = null; return; }                 // pause; moveend restarts us
+        const dt = Math.min(now - lastT, 64); lastT = now;
+        const a = 1 - Math.exp(-dt / LINE_TAU);
+        lineLen += (targetLen - lineLen) * a;
+        if (Math.abs(targetLen - lineLen) < 1) { lineLen = targetLen; drawLine(); lineRAF = null; return; }
+        drawLine();
+        lineRAF = requestAnimationFrame(lineFrame);
+      }
+      map.on('moveend', () => { flying = false; ensureLineLoop(); });
+
+      /* ---------- CAMERA ---------- */
+      function overviewPadding(variant) {
+        if (variant === 'intro') return { tl: [40, 40], br: [40, 40] };
+        if (isMobile()) return { tl: [24, 80], br: [24, Math.min(window.innerHeight * 0.42, 300)] };
+        return { tl: [cardRightPx + 24, 36], br: [NAV_RESERVE + 12, 36] };
+      }
+      function frameScene(i, animate, dur) {
+        const sc = scenes[i];
+        if (sc.type === 'point') {
+          const s = storyData[sc.point];
+          const c = focusToCenter(s.coordinates[0], s.coordinates[1], s.zoom);
+          if (animate) { flying = true; map.flyTo(c, s.zoom, { duration: dur }); }
+          else map.setView(c, s.zoom, { animate: false });
+        } else {
+          const pad = overviewPadding(sc.variant);
+          const opts = { paddingTopLeft: pad.tl, paddingBottomRight: pad.br, maxZoom: OVERVIEW_MAXZOOM };
+          if (animate) { flying = true; map.flyToBounds(overviewBounds, Object.assign({ duration: dur }, opts)); }
+          else map.fitBounds(overviewBounds, opts);
+        }
+      }
+
+      /* ---------- SCENE ACTIVATION ---------- */
+      const cards = Array.from(document.querySelectorAll('.story-card'));
+      const navPrev = document.getElementById('nav-prev');
+      const navNext = document.getElementById('nav-next');
+      let currentScene = -1;
+
+      function updateNav() { navPrev.disabled = currentScene <= 0; navNext.disabled = currentScene >= scenes.length - 1; }
+
+      function durFor(prev, i) {
+        const a = scenes[prev], b = scenes[i];
+        if (!a || a.type === 'overview' || b.type === 'overview') return 1.7;
+        const d = map.distance(storyData[a.point].coordinates, storyData[b.point].coordinates);
+        return d > 6000 ? 2.0 : d > 2500 ? 1.5 : 1.1;
+      }
+
+      function setActiveScene(i) {
+        if (i === currentScene || i < 0 || i >= scenes.length) return;
+        const prev = currentScene;
+        currentScene = i;
+        const sc = scenes[i];
+
+        document.body.classList.toggle('is-overview', sc.type === 'overview');
+        const activePt = sc.type === 'point' ? sc.point : -1;
+        markers.forEach((m, k) => { const el = m.getElement(); if (el) { el.classList.toggle('active', k === activePt); m.setZIndexOffset(k === activePt ? 1000 : 0); } });
+        cards.forEach((c, k) => c.classList.toggle('is-active', k === i));
+        updateNav();
+
+        targetLen = sc.type === 'point' ? cumMeters[sc.point] : (sc.variant === 'intro' ? 0 : totalMeters);
+
+        const animate = !(prev < 0 || prefersReduced);
+        frameScene(i, animate, durFor(prev, i));
+        if (!animate) { flying = false; lineLen = targetLen; drawLine(); }
+        preloadNeighbors();
+      }
+
+      /* ---------- SCROLL → SCENE ---------- */
+      const sections = Array.from(document.querySelectorAll('.story-section'));
+      const io = new IntersectionObserver((entries) => {
+        for (const e of entries) if (e.isIntersecting) {
+          const idx = parseInt(e.target.dataset.scene, 10);
+          if (!Number.isNaN(idx)) setActiveScene(idx);
+        }
+      }, { root: null, rootMargin: '-50% 0px -50% 0px', threshold: 0 });
+      sections.forEach(s => io.observe(s));
+
+      /* ---------- CONTROLS ---------- */
+      document.getElementById('zoom-in').addEventListener('click', () => map.zoomIn());
+      document.getElementById('zoom-out').addEventListener('click', () => map.zoomOut());
+      function goToScene(i) {
+        i = Math.max(0, Math.min(scenes.length - 1, i));
+        window.scrollTo({ top: sections[i].offsetTop, behavior: prefersReduced ? 'auto' : 'smooth' });
+      }
+      navPrev.addEventListener('click', () => goToScene(currentScene - 1));
+      navNext.addEventListener('click', () => goToScene(currentScene + 1));
+
+      /* ---------- PROGRESS BAR ---------- */
+      const progressBar = document.getElementById('progress-bar');
+      let scrollTicking = false;
+      function readScroll() {
+        const y = window.scrollY || document.documentElement.scrollTop;
+        const h = document.documentElement.scrollHeight - window.innerHeight;
+        progressBar.style.width = (h > 0 ? (y / h) * 100 : 0) + '%';
+        scrollTicking = false;
+      }
+      window.addEventListener('scroll', () => { if (!scrollTicking) { scrollTicking = true; requestAnimationFrame(readScroll); } }, { passive: true });
+
+      /* ---------- RESIZE ---------- */
+      let resizeTimer = null;
+      function onResize() {
+        clearTimeout(resizeTimer);
+        resizeTimer = setTimeout(() => {
+          map.invalidateSize({ animate: false });
+          measureCard();
+          readScroll();
+          if (currentScene >= 0) { frameScene(currentScene, false); flying = false; lineLen = targetLen; drawLine(); }
+        }, 180);
+      }
+      window.addEventListener('resize', onResize, { passive: true });
+      window.addEventListener('orientationchange', onResize, { passive: true });
+
+      /* ---------- BOOT ---------- */
+      if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
+      function boot() {
+        window.scrollTo(0, 0);
+        map.invalidateSize({ animate: false });
+        measureCard();
+        setActiveScene(0);            // snaps to intro overview
+        preloadScene(1);             // warm Fatra Para tiles for the first zoom-in
+        readScroll();
+      }
+      if (document.readyState === 'loading') window.addEventListener('DOMContentLoaded', boot);
+      else boot();
+      window.addEventListener('load', () => {
+        map.invalidateSize({ animate: false });
+        measureCard();
+        if (currentScene >= 0) { frameScene(currentScene, false); flying = false; lineLen = targetLen; drawLine(); }
+      });
+    })();
+  </script>
+</body>
+
+</html>
