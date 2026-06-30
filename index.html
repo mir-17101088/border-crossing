@@ -213,6 +213,49 @@
       animation: none;
     }
 
+    /* ===== BORDER ENTRY (scene 1): two crossings + converging paths ===== */
+    .entry-path {
+      opacity: 0;
+      transition: opacity 0.55s var(--ease);
+      filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.8)) drop-shadow(0 0 6px var(--accent-soft));
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    body.is-entry .entry-path {
+      opacity: 1;
+    }
+
+    .entry-marker {
+      opacity: 0;
+      transition: opacity 0.5s var(--ease);
+    }
+
+    body.is-entry .entry-marker {
+      opacity: 1;
+    }
+
+    .entry-dot {
+      width: 13px;
+      height: 13px;
+      background: rgba(245, 158, 11, 0.22);
+      border: 2px solid var(--accent);
+      box-shadow: 0 0 10px rgba(245, 158, 11, 0.7);
+    }
+
+    .entry-marker .mk-label {
+      opacity: 0;
+    }
+
+    body.is-entry .entry-marker .mk-label {
+      opacity: 1;
+      transform: translate(-50%, 0);
+    }
+
+    body.is-entry .entry-marker .mk-pulse {
+      animation: pulse-ring 2.4s cubic-bezier(0.215, 0.61, 0.355, 1) infinite;
+    }
+
     /* ===== HUD ===== */
     .top-progress {
       position: fixed;
@@ -674,6 +717,7 @@
       }
 
       .custom-marker.active .mk-pulse,
+      body.is-entry .entry-marker .mk-pulse,
       .intro-card .scroll-hint svg,
       .brand .live-dot {
         animation: none;
@@ -742,8 +786,20 @@
       </div>
     </section>
 
-    <!-- STEPS -->
+    <!-- BORDER ENTRY: two crossings converging on Fatra Para -->
     <section class="story-section" data-scene="1">
+      <div class="story-card-wrapper">
+        <article class="story-card">
+          <div class="eyebrow">Two Entry Points</div>
+          <h2>Crossing the Zero-Line</h2>
+          <p>Rohingya breach the Myanmar border on two informal footpaths near pillars 59 to 61. Both converge on the
+            Mro village of Fatra Para — the first stop on Bangladeshi soil, where this route begins.</p>
+        </article>
+      </div>
+    </section>
+
+    <!-- STEPS -->
+    <section class="story-section" data-scene="2">
       <div class="story-card-wrapper">
         <article class="story-card">
           <div class="eyebrow">Border Village</div>
@@ -756,7 +812,7 @@
       </div>
     </section>
 
-    <section class="story-section" data-scene="2">
+    <section class="story-section" data-scene="3">
       <div class="story-card-wrapper">
         <article class="story-card">
           <div class="eyebrow">The Descent</div>
@@ -768,7 +824,7 @@
       </div>
     </section>
 
-    <section class="story-section" data-scene="3">
+    <section class="story-section" data-scene="4">
       <div class="story-card-wrapper">
         <article class="story-card">
           <div class="eyebrow">Wet Transit</div>
@@ -780,7 +836,7 @@
       </div>
     </section>
 
-    <section class="story-section" data-scene="4">
+    <section class="story-section" data-scene="5">
       <div class="story-card-wrapper">
         <article class="story-card">
           <div class="eyebrow">Physical Exhaustion</div>
@@ -791,7 +847,7 @@
       </div>
     </section>
 
-    <section class="story-section" data-scene="5">
+    <section class="story-section" data-scene="6">
       <div class="story-card-wrapper">
         <article class="story-card">
           <div class="eyebrow">Forest Cover</div>
@@ -803,7 +859,7 @@
       </div>
     </section>
 
-    <section class="story-section" data-scene="6">
+    <section class="story-section" data-scene="7">
       <div class="story-card-wrapper">
         <article class="story-card">
           <div class="eyebrow">The Roadway</div>
@@ -815,7 +871,7 @@
       </div>
     </section>
 
-    <section class="story-section" data-scene="7">
+    <section class="story-section" data-scene="8">
       <div class="story-card-wrapper">
         <article class="story-card">
           <div class="eyebrow">Surveillance Barrier</div>
@@ -827,7 +883,7 @@
       </div>
     </section>
 
-    <section class="story-section" data-scene="8">
+    <section class="story-section" data-scene="9">
       <div class="story-card-wrapper">
         <article class="story-card">
           <div class="eyebrow">Bypass Road</div>
@@ -839,7 +895,7 @@
       </div>
     </section>
 
-    <section class="story-section" data-scene="9">
+    <section class="story-section" data-scene="10">
       <div class="story-card-wrapper">
         <article class="story-card">
           <div class="eyebrow">Security Gap</div>
@@ -850,7 +906,7 @@
       </div>
     </section>
 
-    <section class="story-section" data-scene="10">
+    <section class="story-section" data-scene="11">
       <div class="story-card-wrapper">
         <article class="story-card">
           <div class="eyebrow">Urban Bypass</div>
@@ -861,7 +917,7 @@
       </div>
     </section>
 
-    <section class="story-section" data-scene="11">
+    <section class="story-section" data-scene="12">
       <div class="story-card-wrapper">
         <article class="story-card">
           <div class="eyebrow">Terminal Point</div>
@@ -874,7 +930,7 @@
     </section>
 
     <!-- OUTRO OVERVIEW -->
-    <section class="story-section" data-scene="12">
+    <section class="story-section" data-scene="13">
       <div class="story-card-wrapper">
         <article class="story-card outro-card">
           <div class="eyebrow">The Full Route</div>
@@ -920,8 +976,15 @@
       const routeCoords = storyData.map(s => s.coordinates);
       const N = storyData.length;
 
-      /* scene list: 0 = intro overview, 1..11 = points, 12 = outro overview */
-      const scenes = [{ type: 'overview', variant: 'intro' }];
+      /* Two border crossings near Fatra Para (georeferenced from the source
+         imagery; both sit on the BD–Myanmar boundary SW and SE of the village). */
+      const entryWest = [21.3628, 92.4701];
+      const entryEast = [21.3596, 92.5058];
+      const fatra = storyData[0].coordinates;
+      const entryBounds = L.latLngBounds([entryWest, entryEast, fatra]);
+
+      /* scene list: 0 intro · 1 entry · 2..12 points · 13 outro */
+      const scenes = [{ type: 'overview', variant: 'intro' }, { type: 'entry' }];
       storyData.forEach((_, i) => scenes.push({ type: 'point', point: i }));
       scenes.push({ type: 'overview', variant: 'outro' });
 
@@ -930,6 +993,7 @@
       const MOBILE_MARKER_TOP = 0.18;
       const LINE_TAU = 240;   // ms — line-reveal easing (runs only when camera is settled)
       const OVERVIEW_MAXZOOM = 12.6;
+      const ENTRY_MAXZOOM = 14.2;
       const prefersReduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
       const isMobile = () => window.innerWidth < MOBILE_BREAKPOINT;
 
@@ -939,7 +1003,7 @@
         scrollWheelZoom: false, doubleClickZoom: false, touchZoom: false,
         boxZoom: false, keyboard: false, dragging: false,
         zoomSnap: 0, zoomDelta: 0.5, minZoom: 10, maxZoom: 17
-      }).setView(storyData[0].coordinates, 12);
+      }).setView(fatra, 12);
 
       const TILE_TEMPLATES = [
         'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
@@ -963,6 +1027,57 @@
 
       const overviewBounds = L.latLngBounds(routeCoords);
 
+      /* ---------- ENTRY GEOMETRY: two gently-curved converging paths ---------- */
+      function bezier(P, C, F, S) {
+        const out = [];
+        for (let i = 0; i <= S; i++) {
+          const t = i / S, u = 1 - t;
+          out.push([u * u * P[0] + 2 * u * t * C[0] + t * t * F[0],
+          u * u * P[1] + 2 * u * t * C[1] + t * t * F[1]]);
+        }
+        return out;
+      }
+      function curveTo(P, F, bow) {                       // bow = perpendicular sag (fraction of span)
+        const mid = [(P[0] + F[0]) / 2, (P[1] + F[1]) / 2];
+        const dLat = F[0] - P[0], dLng = F[1] - P[1];
+        const C = [mid[0] - dLng * bow, mid[1] + dLat * bow];
+        return bezier(P, C, F, 26);
+      }
+      function cumOf(pts) {
+        const cum = [0]; let t = 0;
+        for (let i = 1; i < pts.length; i++) { t += Math.hypot(pts[i][0] - pts[i - 1][0], pts[i][1] - pts[i - 1][1]); cum.push(t); }
+        return { cum, total: t };
+      }
+      function partialCurve(pts, co, frac) {
+        if (frac <= 0) return [];
+        if (frac >= 1) return pts;
+        const target = co.total * frac, out = [pts[0]];
+        let i = 1;
+        for (; i < pts.length; i++) { if (co.cum[i] <= target) out.push(pts[i]); else break; }
+        if (i < pts.length) {
+          const f = (target - co.cum[i - 1]) / (co.cum[i] - co.cum[i - 1]);
+          const a = pts[i - 1], b = pts[i];
+          out.push([a[0] + (b[0] - a[0]) * f, a[1] + (b[1] - a[1]) * f]);
+        }
+        return out.length >= 2 ? out : [];
+      }
+      const curveW = curveTo(entryWest, fatra, -0.13), curveWc = cumOf(curveW);
+      const curveE = curveTo(entryEast, fatra, 0.13), curveEc = cumOf(curveE);
+      const entryStyle = { color: '#f59e0b', weight: 3, opacity: 0.95, className: 'entry-path', interactive: false };
+      const entryPathW = L.polyline([], entryStyle).addTo(map);
+      const entryPathE = L.polyline([], entryStyle).addTo(map);
+      function makeEntryMarker(ll, label) {
+        return L.marker(ll, {
+          icon: L.divIcon({
+            className: 'custom-marker entry-marker',
+            html: '<div class="mk-pulse"></div><div class="mk-dot entry-dot"></div><div class="mk-label">' + label + '</div>',
+            iconSize: [22, 22], iconAnchor: [11, 11]
+          }), keyboard: false, interactive: false
+        }).addTo(map);
+      }
+      makeEntryMarker(entryWest, 'Crossing 1');
+      makeEntryMarker(entryEast, 'Crossing 2');
+
       /* ---------- ROUTE LENGTH MODEL ---------- */
       const cumMeters = [0];
       for (let i = 1; i < N; i++) cumMeters[i] = cumMeters[i - 1] + map.distance(routeCoords[i - 1], routeCoords[i]);
@@ -984,7 +1099,7 @@
       /* ---------- ADAPTIVE CENTRING (point scenes) ---------- */
       let cardRightPx = 360;
       function measureCard() {
-        const w = document.querySelector('.story-section[data-scene="1"] .story-card-wrapper');
+        const w = document.querySelector('.story-section:not(.intro) .story-card-wrapper');
         if (w) { const r = w.getBoundingClientRect(); if (r.width) cardRightPx = r.right; }
       }
       function focusToCenter(lat, lng, zoom) {
@@ -1021,29 +1136,38 @@
       function preloadScene(i) {
         const sc = scenes[i]; if (!sc) return;
         if (sc.type === 'point') { const s = storyData[sc.point]; preloadView(s.coordinates[0], s.coordinates[1], s.zoom, 2); }
+        else if (sc.type === 'entry') { const c = entryBounds.getCenter(); preloadView(c.lat, c.lng, map.getBoundsZoom(entryBounds, false), 2); }
         else { const c = overviewBounds.getCenter(); preloadView(c.lat, c.lng, map.getBoundsZoom(overviewBounds, false), 2); }
       }
       function preloadNeighbors() { preloadScene(currentScene + 1); preloadScene(currentScene - 1); }
 
       /* ---------- LINE LOOP (geometry updates only while camera is settled) ---------- */
-      let lineLen = 0, targetLen = 0, flying = false, lineRAF = null, lastT = 0;
+      let lineLen = 0, targetLen = 0, entryReveal = 0, entryTarget = 0;
+      let flying = false, lineRAF = null, lastT = 0;
       function drawLine() { activePath.setLatLngs(buildPath(lineLen)); }
+      function drawEntry() {
+        entryPathW.setLatLngs(partialCurve(curveW, curveWc, entryReveal));
+        entryPathE.setLatLngs(partialCurve(curveE, curveEc, entryReveal));
+      }
       function ensureLineLoop() { if (lineRAF === null) { lastT = performance.now(); lineRAF = requestAnimationFrame(lineFrame); } }
       function lineFrame(now) {
         if (flying) { lineRAF = null; return; }                 // pause; moveend restarts us
         const dt = Math.min(now - lastT, 64); lastT = now;
         const a = 1 - Math.exp(-dt / LINE_TAU);
         lineLen += (targetLen - lineLen) * a;
-        if (Math.abs(targetLen - lineLen) < 1) { lineLen = targetLen; drawLine(); lineRAF = null; return; }
-        drawLine();
+        entryReveal += (entryTarget - entryReveal) * a;
+        drawLine(); drawEntry();
+        if (Math.abs(targetLen - lineLen) < 1 && Math.abs(entryTarget - entryReveal) < 0.004) {
+          lineLen = targetLen; entryReveal = entryTarget; drawLine(); drawEntry(); lineRAF = null; return;
+        }
         lineRAF = requestAnimationFrame(lineFrame);
       }
       map.on('moveend', () => { flying = false; ensureLineLoop(); });
 
       /* ---------- CAMERA ---------- */
-      function overviewPadding(variant) {
-        if (variant === 'intro') return { tl: [40, 40], br: [40, 40] };
-        if (isMobile()) return { tl: [24, 80], br: [24, Math.min(window.innerHeight * 0.42, 300)] };
+      function cardPadding() {
+        // reserve the right edge for the nav controls so edge markers/labels clear them
+        if (isMobile()) return { tl: [50, 80], br: [NAV_RESERVE + 6, Math.min(window.innerHeight * 0.42, 300)] };
         return { tl: [cardRightPx + 24, 36], br: [NAV_RESERVE + 12, 36] };
       }
       function frameScene(i, animate, dur) {
@@ -1054,10 +1178,12 @@
           if (animate) { flying = true; map.flyTo(c, s.zoom, { duration: dur }); }
           else map.setView(c, s.zoom, { animate: false });
         } else {
-          const pad = overviewPadding(sc.variant);
-          const opts = { paddingTopLeft: pad.tl, paddingBottomRight: pad.br, maxZoom: OVERVIEW_MAXZOOM };
-          if (animate) { flying = true; map.flyToBounds(overviewBounds, Object.assign({ duration: dur }, opts)); }
-          else map.fitBounds(overviewBounds, opts);
+          const isEntry = sc.type === 'entry';
+          const bounds = isEntry ? entryBounds : overviewBounds;
+          const pad = (sc.type === 'overview' && sc.variant === 'intro') ? { tl: [40, 40], br: [40, 40] } : cardPadding();
+          const opts = { paddingTopLeft: pad.tl, paddingBottomRight: pad.br, maxZoom: isEntry ? ENTRY_MAXZOOM : OVERVIEW_MAXZOOM };
+          if (animate) { flying = true; map.flyToBounds(bounds, Object.assign({ duration: dur }, opts)); }
+          else map.fitBounds(bounds, opts);
         }
       }
 
@@ -1071,7 +1197,7 @@
 
       function durFor(prev, i) {
         const a = scenes[prev], b = scenes[i];
-        if (!a || a.type === 'overview' || b.type === 'overview') return 1.7;
+        if (!a || a.type !== 'point' || b.type !== 'point') return 1.7;
         const d = map.distance(storyData[a.point].coordinates, storyData[b.point].coordinates);
         return d > 6000 ? 2.0 : d > 2500 ? 1.5 : 1.1;
       }
@@ -1083,16 +1209,19 @@
         const sc = scenes[i];
 
         document.body.classList.toggle('is-overview', sc.type === 'overview');
-        const activePt = sc.type === 'point' ? sc.point : -1;
+        document.body.classList.toggle('is-entry', sc.type === 'entry');
+        // entry scene highlights Fatra Para (point 0) as the destination
+        const activePt = sc.type === 'point' ? sc.point : (sc.type === 'entry' ? 0 : -1);
         markers.forEach((m, k) => { const el = m.getElement(); if (el) { el.classList.toggle('active', k === activePt); m.setZIndexOffset(k === activePt ? 1000 : 0); } });
         cards.forEach((c, k) => c.classList.toggle('is-active', k === i));
         updateNav();
 
-        targetLen = sc.type === 'point' ? cumMeters[sc.point] : (sc.variant === 'intro' ? 0 : totalMeters);
+        targetLen = sc.type === 'point' ? cumMeters[sc.point] : ((sc.type === 'overview' && sc.variant === 'outro') ? totalMeters : 0);
+        entryTarget = sc.type === 'entry' ? 1 : 0;
 
         const animate = !(prev < 0 || prefersReduced);
         frameScene(i, animate, durFor(prev, i));
-        if (!animate) { flying = false; lineLen = targetLen; drawLine(); }
+        if (!animate) { flying = false; lineLen = targetLen; entryReveal = entryTarget; drawLine(); drawEntry(); }
         preloadNeighbors();
       }
 
@@ -1135,7 +1264,7 @@
           map.invalidateSize({ animate: false });
           measureCard();
           readScroll();
-          if (currentScene >= 0) { frameScene(currentScene, false); flying = false; lineLen = targetLen; drawLine(); }
+          if (currentScene >= 0) { frameScene(currentScene, false); flying = false; lineLen = targetLen; entryReveal = entryTarget; drawLine(); drawEntry(); }
         }, 180);
       }
       window.addEventListener('resize', onResize, { passive: true });
@@ -1148,7 +1277,8 @@
         map.invalidateSize({ animate: false });
         measureCard();
         setActiveScene(0);            // snaps to intro overview
-        preloadScene(1);             // warm Fatra Para tiles for the first zoom-in
+        preloadScene(1);              // warm entry-crossing tiles
+        preloadScene(2);              // warm Fatra Para tiles
         readScroll();
       }
       if (document.readyState === 'loading') window.addEventListener('DOMContentLoaded', boot);
@@ -1156,7 +1286,7 @@
       window.addEventListener('load', () => {
         map.invalidateSize({ animate: false });
         measureCard();
-        if (currentScene >= 0) { frameScene(currentScene, false); flying = false; lineLen = targetLen; drawLine(); }
+        if (currentScene >= 0) { frameScene(currentScene, false); flying = false; lineLen = targetLen; entryReveal = entryTarget; drawLine(); drawEntry(); }
       });
     })();
   </script>
