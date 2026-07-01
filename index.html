@@ -259,6 +259,24 @@
       }
     }
 
+    /* Pause the flowing animation on lines that aren't currently shown (saves paint) */
+    .entry-flow,
+    .bypass-path {
+      animation-play-state: paused;
+    }
+
+    body.entry-shown .entry-flow {
+      animation-play-state: running;
+    }
+
+    body.show-bypass-mendon .bypass-path.b-mendon {
+      animation-play-state: running;
+    }
+
+    body.show-bypass-alikadam .bypass-path.b-alikadam {
+      animation-play-state: running;
+    }
+
     .entry-dot {
       width: 13px;
       height: 13px;
@@ -278,6 +296,169 @@
 
     body.is-entry .entry-marker .mk-pulse {
       animation: pulse-ring 2.4s cubic-bezier(0.215, 0.61, 0.355, 1) infinite;
+    }
+
+    /* ===== PHOTO SCENES ===== */
+    .map-scrim {
+      position: fixed;
+      inset: 0;
+      z-index: 5;
+      pointer-events: none;
+      background: radial-gradient(ellipse at center, rgba(3, 7, 18, 0.12), rgba(3, 7, 18, 0.55));
+      opacity: 0;
+      transition: opacity 0.6s var(--ease);
+    }
+
+    body.is-image .map-scrim {
+      opacity: 1;
+    }
+
+    .story-card-wrapper.photo-wrapper {
+      max-width: clamp(360px, 42vw, 680px);
+    }
+
+    .photo-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      overflow: hidden;
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      box-shadow: 0 24px 55px rgba(0, 0, 0, 0.55);
+      opacity: 0;
+      transform: translateY(16px) scale(0.985);
+      transition: opacity var(--t-card) var(--ease), transform var(--t-card) var(--ease);
+    }
+
+    .photo-card.is-active {
+      opacity: 1;
+      transform: none;
+    }
+
+    .photo-frame {
+      margin: 0;
+      background: #0b1120;
+      line-height: 0;
+    }
+
+    .photo-card img {
+      display: block;
+      width: 100%;
+      height: auto;
+      max-height: min(62vh, 640px);
+      object-fit: cover;
+      cursor: zoom-in;
+    }
+
+    .photo-card figcaption {
+      padding: 12px 16px 14px;
+      font-size: 12.5px;
+      line-height: 1.5;
+      color: var(--text-dim);
+      border-top: 1px solid var(--card-border);
+    }
+
+    /* ===== CHECKPOST BYPASS ===== */
+    .bypass-path {
+      opacity: 0;
+      transition: opacity 0.55s var(--ease);
+      filter: drop-shadow(0 0 6px rgba(251, 113, 133, 0.85));
+    }
+
+    body.show-bypass-mendon .bypass-path.b-mendon {
+      opacity: 0.95;
+    }
+
+    body.show-bypass-alikadam .bypass-path.b-alikadam {
+      opacity: 0.95;
+    }
+
+    .legend .swatch.bypass {
+      border-top: 3px dashed #fb7185;
+    }
+
+    /* ===== LIGHTBOX ===== */
+    .lightbox {
+      position: fixed;
+      inset: 0;
+      z-index: 100;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      padding: 3vmin;
+      background: rgba(3, 7, 18, 0.93);
+      backdrop-filter: blur(6px);
+      -webkit-backdrop-filter: blur(6px);
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+      transition: opacity 0.3s var(--ease), visibility 0.3s var(--ease);
+    }
+
+    .lightbox.open {
+      opacity: 1;
+      visibility: visible;
+      pointer-events: auto;
+    }
+
+    .lightbox-fig {
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+      max-width: 100%;
+      max-height: 100%;
+    }
+
+    .lightbox-fig img {
+      max-width: 94vw;
+      max-height: 82vh;
+      width: auto;
+      height: auto;
+      object-fit: contain;
+      border-radius: 8px;
+      box-shadow: 0 24px 70px rgba(0, 0, 0, 0.65);
+    }
+
+    .lightbox-fig figcaption {
+      font-family: 'Inter', sans-serif;
+      font-size: 13px;
+      line-height: 1.5;
+      color: var(--text-dim);
+      text-align: center;
+      max-width: 90vw;
+    }
+
+    .lightbox-close {
+      position: absolute;
+      top: 14px;
+      right: 16px;
+      width: 42px;
+      height: 42px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      color: var(--text);
+      border-radius: 50%;
+      font-size: 26px;
+      line-height: 1;
+      cursor: pointer;
+      z-index: 2;
+      transition: background var(--t-fast), color var(--t-fast), transform 90ms;
+    }
+
+    .lightbox-close:hover {
+      background: rgba(245, 158, 11, 0.2);
+      color: #fff;
+    }
+
+    .lightbox-close:active {
+      transform: scale(0.92);
     }
 
     /* ===== HUD ===== */
@@ -473,6 +654,7 @@
       position: relative;
       z-index: 10;
       width: 100%;
+      pointer-events: none;   /* let map drag/zoom pass through; cards re-enable below */
     }
 
     .story-section {
@@ -712,6 +894,19 @@
       .route-list {
         font-size: 11.5px;
       }
+
+      .story-card-wrapper.photo-wrapper {
+        max-width: 92vw;
+      }
+
+      .photo-card img {
+        max-height: 48vh;
+      }
+
+      .photo-card figcaption {
+        font-size: 12px;
+        padding: 10px 12px 12px;
+      }
     }
 
     @media (max-width: 380px) {
@@ -758,6 +953,8 @@
   <div id="map" role="img" aria-label="Satellite map of the Alikadam infiltration corridor, Bandarban, Bangladesh.">
   </div>
 
+  <div class="map-scrim" aria-hidden="true"></div>
+
   <div class="top-progress">
     <div id="progress-bar"></div>
   </div>
@@ -770,6 +967,7 @@
       <div class="row"><span class="swatch border"></span><span>BD–Myanmar border</span></div>
       <div class="row"><span class="swatch active"></span><span>Active transit path</span></div>
       <div class="row ref-row"><span class="swatch ref"></span><span>Total corridor ref.</span></div>
+      <div class="row"><span class="swatch bypass"></span><span>Checkpost bypass</span></div>
     </div>
   </div>
 
@@ -796,7 +994,7 @@
   <main id="story-track">
 
     <!-- INTRO OVERVIEW -->
-    <section class="story-section intro" data-scene="0">
+    <section class="story-section intro" data-scene="0" data-type="intro">
       <div class="story-card-wrapper">
         <article class="story-card intro-card">
           <div class="eyebrow">Border Crossing</div>
@@ -812,7 +1010,7 @@
     </section>
 
     <!-- BORDER ENTRY: two crossings converging on Fatra Para -->
-    <section class="story-section" data-scene="1">
+    <section class="story-section" data-scene="1" data-type="entry">
       <div class="story-card-wrapper">
         <article class="story-card">
           <div class="eyebrow">Two Entry Points</div>
@@ -824,7 +1022,7 @@
     </section>
 
     <!-- STEPS -->
-    <section class="story-section" data-scene="2">
+    <section class="story-section" data-scene="2" data-type="point" data-point="0">
       <div class="story-card-wrapper">
         <article class="story-card">
           <div class="eyebrow">Border Village</div>
@@ -837,7 +1035,7 @@
       </div>
     </section>
 
-    <section class="story-section" data-scene="3">
+    <section class="story-section" data-scene="3" data-type="point" data-point="1">
       <div class="story-card-wrapper">
         <article class="story-card">
           <div class="eyebrow">The Descent</div>
@@ -849,7 +1047,7 @@
       </div>
     </section>
 
-    <section class="story-section" data-scene="4">
+    <section class="story-section" data-scene="4" data-type="point" data-point="2">
       <div class="story-card-wrapper">
         <article class="story-card">
           <div class="eyebrow">Wet Transit</div>
@@ -861,7 +1059,7 @@
       </div>
     </section>
 
-    <section class="story-section" data-scene="5">
+    <section class="story-section" data-scene="5" data-type="point" data-point="3">
       <div class="story-card-wrapper">
         <article class="story-card">
           <div class="eyebrow">Physical Exhaustion</div>
@@ -872,7 +1070,7 @@
       </div>
     </section>
 
-    <section class="story-section" data-scene="6">
+    <section class="story-section" data-scene="6" data-type="point" data-point="4">
       <div class="story-card-wrapper">
         <article class="story-card">
           <div class="eyebrow">Forest Cover</div>
@@ -884,7 +1082,7 @@
       </div>
     </section>
 
-    <section class="story-section" data-scene="7">
+    <section class="story-section" data-scene="7" data-type="point" data-point="5">
       <div class="story-card-wrapper">
         <article class="story-card">
           <div class="eyebrow">The Roadway</div>
@@ -896,7 +1094,7 @@
       </div>
     </section>
 
-    <section class="story-section" data-scene="8">
+    <section class="story-section" data-scene="8" data-type="point" data-point="6">
       <div class="story-card-wrapper">
         <article class="story-card">
           <div class="eyebrow">Surveillance Barrier</div>
@@ -908,7 +1106,7 @@
       </div>
     </section>
 
-    <section class="story-section" data-scene="9">
+    <section class="story-section" data-scene="9" data-type="point" data-point="7">
       <div class="story-card-wrapper">
         <article class="story-card">
           <div class="eyebrow">Bypass Road</div>
@@ -920,7 +1118,7 @@
       </div>
     </section>
 
-    <section class="story-section" data-scene="10">
+    <section class="story-section" data-scene="10" data-type="point" data-point="8">
       <div class="story-card-wrapper">
         <article class="story-card">
           <div class="eyebrow">Security Gap</div>
@@ -931,7 +1129,7 @@
       </div>
     </section>
 
-    <section class="story-section" data-scene="11">
+    <section class="story-section" data-scene="11" data-type="point" data-point="9">
       <div class="story-card-wrapper">
         <article class="story-card">
           <div class="eyebrow">Urban Bypass</div>
@@ -942,7 +1140,7 @@
       </div>
     </section>
 
-    <section class="story-section" data-scene="12">
+    <section class="story-section" data-scene="12" data-type="point" data-point="10">
       <div class="story-card-wrapper">
         <article class="story-card">
           <div class="eyebrow">Terminal Point</div>
@@ -955,7 +1153,7 @@
     </section>
 
     <!-- OUTRO OVERVIEW -->
-    <section class="story-section" data-scene="13">
+    <section class="story-section" data-scene="13" data-type="outro">
       <div class="story-card-wrapper">
         <article class="story-card outro-card">
           <div class="eyebrow">The Full Route</div>
@@ -979,6 +1177,14 @@
 
     <div class="scroll-buffer"></div>
   </main>
+
+  <div id="lightbox" class="lightbox" role="dialog" aria-modal="true" aria-hidden="true">
+    <button id="lightbox-close" class="lightbox-close" type="button" aria-label="Close image">&times;</button>
+    <figure class="lightbox-fig">
+      <img id="lightbox-img" alt="">
+      <figcaption id="lightbox-cap"></figcaption>
+    </figure>
+  </div>
 
   <script>
     (function () {
@@ -1187,10 +1393,93 @@
       const fatra = storyData[0].coordinates;
       const entryBounds = L.latLngBounds([entryWest, entryEast, fatra]);
 
-      /* scene list: 0 intro · 1 entry · 2..12 points · 13 outro */
-      const scenes = [{ type: 'overview', variant: 'intro' }, { type: 'entry' }];
-      storyData.forEach((_, i) => scenes.push({ type: 'point', point: i }));
-      scenes.push({ type: 'overview', variant: 'outro' });
+      /* ---------- STORY CONFIG ----------
+         To add a photo: drop images/<name>_{sm,md,lg}.avif in /images and add
+         img('<name>', 'caption') to that waypoint's list below. To add nothing,
+         leave the waypoint out — it just shows its story card. Scenes/sections
+         are generated from this; the map, reveal and nav all adapt automatically. */
+      const IMG_SIZES = 'images/@_sm.avif 800w, images/@_md.avif 1600w, images/@_lg.avif 2560w';
+      function img(name, cap) { return { kind: 'image', name: name, cap: cap }; }
+      function bypass(which) { return { kind: 'bypass', which: which }; }
+      function esc(t) { return String(t).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
+
+      const EXTRAS = {
+        0: [img('fatra_para1', 'Fatra Para — the last Mro village before the zero-line.'),
+        img('fatra_para2', 'Nightfall settles over the border hills.')],
+        3: [img('paharbhanga_para', 'The ridgelines above Pahar Bhanga.'),
+        img('matamuhuri', 'The Matamuhuri River, waded in the dark.')],
+        4: [img('jhum_ghar', 'A jhum hut, deep in the forest cover near Shindhu Mukh.')],
+        5: [img('dori_para', 'Dori Para, where the paved road finally begins.')],
+        7: [bypass('mendon')],
+        9: [bypass('alikadam'), img('mongcha_para_bypass', 'The footpath that skirts the Alikadam Bazar checkpost.')],
+        10: [img('mongcha_para', 'Mongcha Para — the final wade into the bazaar.')]
+      };
+      const BYPASS_INFO = {
+        mendon: {
+          eyebrow: 'The Bypass', title: 'Slipping Past Mendon Para',
+          body: 'As the motorbike rolls straight through the army checkpost, its passengers have already vanished — peeling onto this narrow footpath that skirts the post and rejoins the road on the far side.',
+          coords: [[21.542579,92.399474],[21.542327,92.399015],[21.542166,92.398527],[21.541939,92.398068],[21.541899,92.397896]], maxZoom: 16.4
+        },
+        alikadam: {
+          eyebrow: 'The Final Bypass', title: 'Around the Last Checkpost',
+          body: 'Rather than face the Alikadam Bazar checkpost head-on, the group breaks away onto a long footpath detour — looping through Nayapara and Mongcha Para to slip into the bazaar unseen.',
+          coords: [[21.64064,92.312391],[21.640641,92.311471],[21.640748,92.310414],[21.640891,92.308945],[21.640982,92.307652],[21.640598,92.306868],[21.639925,92.306535],[21.638996,92.30581],[21.638398,92.305597],[21.638271,92.304226],[21.638178,92.302736],[21.638489,92.301759],[21.639364,92.301585],[21.639629,92.300708],[21.639957,92.299774],[21.641416,92.300503],[21.642446,92.3009],[21.642605,92.300212],[21.644259,92.300336],[21.645842,92.300568],[21.646952,92.300549],[21.647768,92.300027],[21.648771,92.299492],[21.649156,92.299328],[21.649207,92.299963],[21.649131,92.300693],[21.649043,92.301744],[21.649135,92.302565],[21.648911,92.303161],[21.648893,92.303435]], maxZoom: 14.6
+        }
+      };
+
+      function makeImageSection(ex, pt) {
+        const s = document.createElement('section');
+        s.className = 'story-section';
+        s.dataset.type = 'image'; s.dataset.point = pt;
+        const srcset = IMG_SIZES.replace(/@/g, ex.name);
+        s.innerHTML =
+          '<div class="story-card-wrapper photo-wrapper"><figure class="photo-card">' +
+          '<div class="photo-frame"><img loading="lazy" decoding="async" alt="' + esc(ex.cap) + '" ' +
+          'data-name="' + ex.name + '" data-cap="' + esc(ex.cap) + '" ' +
+          'sizes="(max-width: 700px) 92vw, 42vw" srcset="' + srcset + '" src="images/' + ex.name + '_md.avif"></div>' +
+          '<figcaption>' + esc(ex.cap) + '</figcaption></figure></div>';
+        return s;
+      }
+      function makeBypassSection(ex, pt) {
+        const info = BYPASS_INFO[ex.which];
+        const s = document.createElement('section');
+        s.className = 'story-section';
+        s.dataset.type = 'bypass'; s.dataset.point = pt; s.dataset.which = ex.which;
+        s.innerHTML =
+          '<div class="story-card-wrapper"><article class="story-card bypass-card">' +
+          '<div class="eyebrow">' + info.eyebrow + '</div><h2>' + info.title + '</h2><p>' + info.body + '</p>' +
+          '</article></div>';
+        return s;
+      }
+      function buildStory() {
+        const bySection = {};
+        document.querySelectorAll('.story-section[data-type="point"]').forEach(s => { bySection[+s.dataset.point] = s; });
+        Object.keys(EXTRAS).forEach(key => {
+          let anchor = bySection[+key];
+          if (!anchor) return;
+          EXTRAS[+key].forEach(ex => {
+            const sec = ex.kind === 'image' ? makeImageSection(ex, +key) : makeBypassSection(ex, +key);
+            anchor.after(sec); anchor = sec;
+          });
+        });
+        const secs = Array.from(document.querySelectorAll('.story-section'));
+        const scn = secs.map((s, i) => {
+          s.dataset.scene = i;
+          const t = s.dataset.type;
+          if (t === 'point') return { type: 'point', point: +s.dataset.point };
+          if (t === 'image') return { type: 'image', point: +s.dataset.point };
+          if (t === 'bypass') return { type: 'bypass', which: s.dataset.which, point: +s.dataset.point };
+          if (t === 'entry') return { type: 'entry' };
+          if (t === 'intro') return { type: 'overview', variant: 'intro' };
+          return { type: 'overview', variant: 'outro' };
+        });
+        const crd = secs.map(s => s.querySelector('.story-card, .photo-card'));
+        return { scenes: scn, sections: secs, cards: crd };
+      }
+      const __built = buildStory();
+      const scenes = __built.scenes, sections = __built.sections, cards = __built.cards;
+      const mendonBypassIdx = scenes.findIndex(s => s.type === 'bypass' && s.which === 'mendon');
+      const alikadamBypassIdx = scenes.findIndex(s => s.type === 'bypass' && s.which === 'alikadam');
 
       const MOBILE_BREAKPOINT = 700;
       const NAV_RESERVE = 64;
@@ -1204,10 +1493,11 @@
       /* ---------- MAP (native flyTo only — never per-frame setView) ---------- */
       const map = L.map('map', {
         zoomControl: false, attributionControl: true,
-        scrollWheelZoom: false, doubleClickZoom: false, touchZoom: false,
+        scrollWheelZoom: false, doubleClickZoom: true, touchZoom: true,
         boxZoom: false, keyboard: false, dragging: false,
         zoomSnap: 0, zoomDelta: 0.5, minZoom: 10, maxZoom: 17
       }).setView(fatra, 12);
+      if (!isMobile()) map.dragging.enable();   // drag to explore (desktop; mobile keeps vertical scroll)
 
       const TILE_TEMPLATES = [
         'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
@@ -1286,6 +1576,12 @@
       makeEntryMarker(entryWest, 'Crossing 1');
       makeEntryMarker(entryEast, 'Crossing 2');
 
+      /* ---------- CHECKPOST BYPASS FOOTPATHS (teal, flowing; shown from their scene onward) ---------- */
+      const bypassStyle = { color: '#fb7185', weight: 3, opacity: 0.95, lineCap: 'round', interactive: false, smoothFactor: 0 };
+      L.polyline(BYPASS_INFO.mendon.coords, Object.assign({ className: 'bypass-path flow-dash b-mendon' }, bypassStyle)).addTo(map);
+      L.polyline(BYPASS_INFO.alikadam.coords, Object.assign({ className: 'bypass-path flow-dash b-alikadam' }, bypassStyle)).addTo(map);
+      const bypassBounds = { mendon: L.latLngBounds(BYPASS_INFO.mendon.coords), alikadam: L.latLngBounds(BYPASS_INFO.alikadam.coords) };
+
       /* ---------- ROUTE LENGTH MODEL (measured along the smooth route) ---------- */
       const cumDense = [0];
       for (let i = 1; i < denseRoute.length; i++) cumDense[i] = cumDense[i - 1] + map.distance(denseRoute[i - 1], denseRoute[i]);
@@ -1344,7 +1640,8 @@
       }
       function preloadScene(i) {
         const sc = scenes[i]; if (!sc) return;
-        if (sc.type === 'point') { const s = storyData[sc.point]; preloadView(s.coordinates[0], s.coordinates[1], s.zoom, 2); }
+        if (sc.type === 'point' || sc.type === 'image') { const s = storyData[sc.point]; preloadView(s.coordinates[0], s.coordinates[1], s.zoom, 2); }
+        else if (sc.type === 'bypass') { const b = bypassBounds[sc.which]; const c = b.getCenter(); preloadView(c.lat, c.lng, map.getBoundsZoom(b, false), 2); }
         else if (sc.type === 'entry') { const c = entryBounds.getCenter(); preloadView(c.lat, c.lng, map.getBoundsZoom(entryBounds, false), 2); }
         else { const c = overviewBounds.getCenter(); preloadView(c.lat, c.lng, map.getBoundsZoom(overviewBounds, false), 2); }
       }
@@ -1382,11 +1679,17 @@
       }
       function frameScene(i, animate, dur) {
         const sc = scenes[i];
-        if (sc.type === 'point') {
+        if (sc.type === 'point' || sc.type === 'image') {   // image scenes hold on their waypoint
           const s = storyData[sc.point];
           const c = focusToCenter(s.coordinates[0], s.coordinates[1], s.zoom);
           if (animate) { flying = true; map.flyTo(c, s.zoom, { duration: dur }); }
           else map.setView(c, s.zoom, { animate: false });
+        } else if (sc.type === 'bypass') {
+          const bounds = bypassBounds[sc.which];
+          const pad = cardPadding();
+          const opts = { paddingTopLeft: pad.tl, paddingBottomRight: pad.br, maxZoom: BYPASS_INFO[sc.which].maxZoom };
+          if (animate) { flying = true; map.flyToBounds(bounds, Object.assign({ duration: dur }, opts)); }
+          else map.fitBounds(bounds, opts);
         } else {
           const isEntry = sc.type === 'entry';
           const bounds = isEntry ? entryBounds : overviewBounds;
@@ -1398,7 +1701,6 @@
       }
 
       /* ---------- SCENE ACTIVATION ---------- */
-      const cards = Array.from(document.querySelectorAll('.story-card'));
       const navPrev = document.getElementById('nav-prev');
       const navNext = document.getElementById('nav-next');
       let currentScene = -1;
@@ -1407,7 +1709,9 @@
 
       function durFor(prev, i) {
         const a = scenes[prev], b = scenes[i];
-        if (!a || a.type !== 'point' || b.type !== 'point') return 1.7;
+        if (!a) return 1.4;
+        if (b.type === 'image' && a.point === b.point) return 0.7;   // photo over the same view
+        if (a.type !== 'point' || b.type !== 'point') return 1.4;
         const d = map.distance(storyData[a.point].coordinates, storyData[b.point].coordinates);
         return d > 6000 ? 2.0 : d > 2500 ? 1.5 : 1.1;
       }
@@ -1418,16 +1722,20 @@
         currentScene = i;
         const sc = scenes[i];
 
+        const hasPoint = (sc.type === 'point' || sc.type === 'image' || sc.type === 'bypass');
         document.body.classList.toggle('is-overview', sc.type === 'overview');
         document.body.classList.toggle('is-entry', sc.type === 'entry');
+        document.body.classList.toggle('is-image', sc.type === 'image');
+        document.body.classList.toggle('is-bypass', sc.type === 'bypass');
         document.body.classList.toggle('entry-shown', i >= 1);   // crossing paths persist from the entry scene onward
-        // entry scene highlights Fatra Para (point 0) as the destination
-        const activePt = sc.type === 'point' ? sc.point : (sc.type === 'entry' ? 0 : -1);
+        document.body.classList.toggle('show-bypass-mendon', mendonBypassIdx >= 0 && i >= mendonBypassIdx);
+        document.body.classList.toggle('show-bypass-alikadam', alikadamBypassIdx >= 0 && i >= alikadamBypassIdx);
+        const activePt = hasPoint ? sc.point : (sc.type === 'entry' ? 0 : -1);
         markers.forEach((m, k) => { const el = m.getElement(); if (el) { el.classList.toggle('active', k === activePt); m.setZIndexOffset(k === activePt ? 1000 : 0); } });
-        cards.forEach((c, k) => c.classList.toggle('is-active', k === i));
+        cards.forEach((c, k) => { if (c) c.classList.toggle('is-active', k === i); });
         updateNav();
 
-        targetLen = sc.type === 'point' ? waypointLen[sc.point] : ((sc.type === 'overview' && sc.variant === 'outro') ? totalMeters : 0);
+        targetLen = hasPoint ? waypointLen[sc.point] : ((sc.type === 'overview' && sc.variant === 'outro') ? totalMeters : 0);
         entryTarget = i >= 1 ? 1 : 0;   // keep the two crossing paths drawn for the rest of the journey
 
         const animate = !(prev < 0 || prefersReduced);
@@ -1437,7 +1745,6 @@
       }
 
       /* ---------- SCROLL → SCENE ---------- */
-      const sections = Array.from(document.querySelectorAll('.story-section'));
       const io = new IntersectionObserver((entries) => {
         for (const e of entries) if (e.isIntersecting) {
           const idx = parseInt(e.target.dataset.scene, 10);
@@ -1474,6 +1781,7 @@
         resizeTimer = setTimeout(() => {
           map.invalidateSize({ animate: false });
           measureCard();
+          if (isMobile()) map.dragging.disable(); else map.dragging.enable();
           readScroll();
           if (currentScene >= 0) { frameScene(currentScene, false); flying = false; lineLen = targetLen; entryReveal = entryTarget; drawLine(); drawEntry(); }
         }, 180);
@@ -1499,6 +1807,33 @@
         measureCard();
         if (currentScene >= 0) { frameScene(currentScene, false); flying = false; lineLen = targetLen; entryReveal = entryTarget; drawLine(); drawEntry(); }
       });
+
+      /* ---------- LIGHTBOX (click any photo to view it large; × / backdrop / Esc to close) ---------- */
+      const lightbox = document.getElementById('lightbox');
+      const lightboxImg = document.getElementById('lightbox-img');
+      const lightboxCap = document.getElementById('lightbox-cap');
+      function openLightbox(name, cap) {
+        if (!name) return;
+        lightboxImg.srcset = 'images/' + name + '_sm.avif 800w, images/' + name + '_md.avif 1600w, images/' + name + '_lg.avif 2560w';
+        lightboxImg.sizes = '96vw';
+        lightboxImg.src = 'images/' + name + '_lg.avif';
+        lightboxImg.alt = cap || '';
+        lightboxCap.textContent = cap || '';
+        lightbox.classList.add('open');
+        lightbox.setAttribute('aria-hidden', 'false');
+        document.body.style.overflow = 'hidden';
+      }
+      function closeLightbox() {
+        lightbox.classList.remove('open');
+        lightbox.setAttribute('aria-hidden', 'true');
+        document.body.style.overflow = '';
+      }
+      document.addEventListener('click', (e) => {
+        const t = e.target;
+        if (t && t.closest && t.closest('.photo-card img')) { openLightbox(t.dataset.name, t.dataset.cap || t.alt); return; }
+        if (t === lightbox || t.id === 'lightbox-close' || (t.classList && t.classList.contains('lightbox-fig'))) closeLightbox();
+      });
+      document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && lightbox.classList.contains('open')) closeLightbox(); });
     })();
   </script>
 </body>
