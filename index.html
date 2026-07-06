@@ -345,7 +345,7 @@
       display: block;
       width: 100%;
       height: auto;
-      max-height: min(62vh, 640px);
+      max-height: min(66vh, 760px);
       object-fit: cover;
       cursor: zoom-in;
     }
@@ -356,6 +356,113 @@
       line-height: 1.5;
       color: var(--text-dim);
       border-top: 1px solid var(--card-border);
+    }
+
+    /* ===== CONTEXT & CAROUSEL ===== */
+    .context-text {
+      font-size: 16px;
+      font-weight: 300;
+      line-height: 1.75;
+      color: var(--text);
+      margin: 12px 0 0;
+    }
+
+    .carousel-frame {
+      position: relative;
+      overflow: hidden;
+      width: 100%;
+      aspect-ratio: 16 / 10;
+    }
+
+    .carousel-slides {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      display: flex;
+    }
+
+    .carousel-slide {
+      min-width: 100%;
+      width: 100%;
+      height: 100%;
+      display: none;
+      position: relative;
+    }
+
+    .carousel-slide img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .carousel-slide.active {
+      display: block;
+    }
+
+    .carousel-btn {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      background: rgba(9, 13, 26, 0.75);
+      border: 1px solid var(--card-border);
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      z-index: 10;
+      transition: background var(--t-fast) var(--ease), border-color var(--t-fast) var(--ease), color var(--t-fast) var(--ease), transform 90ms;
+      padding: 0;
+    }
+
+    .carousel-btn:hover {
+      background: rgba(245, 158, 11, 0.22);
+      border-color: rgba(245, 158, 11, 0.5);
+      color: #fff;
+    }
+
+    .carousel-btn:active {
+      transform: translateY(-50%) scale(0.92);
+    }
+
+    .carousel-btn.prev {
+      left: 12px;
+    }
+
+    .carousel-btn.next {
+      right: 12px;
+    }
+
+    .carousel-btn svg {
+      width: 20px;
+      height: 20px;
+    }
+
+    .carousel-dots {
+      position: absolute;
+      bottom: 12px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      gap: 6px;
+      z-index: 10;
+    }
+
+    .carousel-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.4);
+      cursor: pointer;
+      transition: background 0.25s, transform 0.25s;
+    }
+
+    .carousel-dot.active {
+      background: var(--accent);
+      transform: scale(1.25);
     }
 
     /* ===== CHECKPOST BYPASS ===== */
@@ -728,8 +835,12 @@
       padding: 0 16px;
     }
 
-    .story-section.intro .story-card-wrapper {
-      max-width: 440px;
+    .story-section.intro .story-card-wrapper:not(.photo-wrapper) {
+      max-width: min(580px, 85vw);
+    }
+
+    .story-section.intro .story-card-wrapper.photo-wrapper {
+      max-width: min(920px, 75vw);
     }
 
     .intro-card {
@@ -738,7 +849,7 @@
 
     .intro-card h1 {
       margin: 4px 0 10px;
-      font-size: 27px;
+      font-size: 32px;
       font-weight: 800;
       line-height: 1.15;
       letter-spacing: -0.01em;
@@ -746,7 +857,7 @@
     }
 
     .intro-card p {
-      font-size: 13.5px;
+      font-size: 15px;
       color: var(--text-dim);
     }
 
@@ -896,17 +1007,32 @@
         font-size: 11.5px;
       }
 
-      .story-card-wrapper.photo-wrapper {
-        max-width: 92vw;
+      .story-card-wrapper.photo-wrapper,
+      .story-section.intro .story-card-wrapper.photo-wrapper {
+        max-width: 95vw;
       }
 
       .photo-card img {
-        max-height: 48vh;
+        max-height: 55vh;
       }
 
       .photo-card figcaption {
         font-size: 12px;
         padding: 10px 12px 12px;
+      }
+
+      .story-section.intro .photo-card figcaption {
+        display: none;
+      }
+
+      .carousel-btn {
+        width: 28px;
+        height: 28px;
+      }
+
+      .carousel-btn svg {
+        width: 14px;
+        height: 14px;
       }
     }
 
@@ -1007,6 +1133,117 @@
             <span><em>Visualization:</em> Mir Rownak</span>
           </div>
         </article>
+      </div>
+    </section>
+
+    <!-- CONTEXT TEXT 1 -->
+    <section class="story-section intro" data-type="context">
+      <div class="story-card-wrapper">
+        <article class="story-card intro-card">
+          <div class="eyebrow">Historical Context</div>
+          <p class="context-text">For decades, Rohingya people have fled Myanmar and sought refuge in Bangladesh due to persecution and violence. Since 1978, several waves of Rohingya have crossed the border to flee military crackdowns and unrest.</p>
+        </article>
+      </div>
+    </section>
+
+    <!-- CONTEXT IMAGE 1 -->
+    <section class="story-section intro" data-type="context-image">
+      <div class="story-card-wrapper photo-wrapper">
+        <figure class="photo-card">
+          <div class="photo-frame">
+            <img loading="lazy" decoding="async" alt="Rohingya camp overview"
+              data-name="camp_1" data-cap="Rohingya refugees seek shelter in Bangladesh, establishing massive makeshift settlements."
+              sizes="(max-width: 700px) 92vw, 42vw" 
+              srcset="images/camp_1_sm.avif 800w, images/camp_1_md.avif 1600w, images/camp_1_lg.avif 2560w" 
+              src="images/camp_1_md.avif">
+          </div>
+          <figcaption>Rohingya refugees seek shelter in Bangladesh, establishing massive makeshift settlements.</figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <!-- CONTEXT TEXT 2 -->
+    <section class="story-section intro" data-type="context">
+      <div class="story-card-wrapper">
+        <article class="story-card intro-card">
+          <div class="eyebrow">The 2017 Crisis</div>
+          <p class="context-text">The largest influx occurred in 2017, when hundreds of thousands fled Myanmar to escape a brutal military campaign. According to government figures, around 12 lakh Rohingya from Myanmar are currently living in camps in Ukhiya and Teknaf.</p>
+        </article>
+      </div>
+    </section>
+
+    <!-- CONTEXT IMAGE 2 -->
+    <section class="story-section intro" data-type="context-image">
+      <div class="story-card-wrapper photo-wrapper">
+        <figure class="photo-card">
+          <div class="photo-frame">
+            <img loading="lazy" decoding="async" alt="Refugee shelters"
+              data-name="camp_2" data-cap="Crowded shelters sprawl across the hills of Ukhiya and Teknaf, home to over a million refugees."
+              sizes="(max-width: 700px) 92vw, 42vw" 
+              srcset="images/camp_2_sm.avif 800w, images/camp_2_md.avif 1600w, images/camp_2_lg.avif 2560w" 
+              src="images/camp_2_md.avif">
+          </div>
+          <figcaption>Crowded shelters sprawl across the hills of Ukhiya and Teknaf, home to over a million refugees.</figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <!-- CONTEXT TEXT 3 -->
+    <section class="story-section intro" data-type="context">
+      <div class="story-card-wrapper">
+        <article class="story-card intro-card">
+          <div class="eyebrow">Unofficial Transit</div>
+          <p class="context-text">However, Rohingya continue to enter Bangladesh through unofficial routes. Many use remote hill tracks and river crossings to avoid detection. As these movements take place outside formal border checkpoints, there are no reliable estimates of how many people are entering the country through these hidden routes.</p>
+        </article>
+      </div>
+    </section>
+
+    <!-- CONTEXT IMAGE 3 (Autoplay Carousel) -->
+    <section class="story-section intro" data-type="context-image" id="context-carousel-section">
+      <div class="story-card-wrapper photo-wrapper">
+        <figure class="photo-card">
+          <div class="photo-frame carousel-frame">
+            <div class="carousel-slides">
+              <div class="carousel-slide active">
+                <img loading="lazy" decoding="async" alt="Camp scene 3"
+                  data-name="camp_3" data-cap="Refugees navigate makeshift paths through the dense camp settlements."
+                  sizes="(max-width: 700px) 92vw, 42vw" 
+                  srcset="images/camp_3_sm.avif 800w, images/camp_3_md.avif 1600w, images/camp_3_lg.avif 2560w" 
+                  src="images/camp_3_md.avif">
+              </div>
+              <div class="carousel-slide">
+                <img loading="lazy" decoding="async" alt="Camp scene 4"
+                  data-name="camp_4" data-cap="Temporary shelters constructed from bamboo and tarpaulin cover the landscape."
+                  sizes="(max-width: 700px) 92vw, 42vw" 
+                  srcset="images/camp_4_sm.avif 800w, images/camp_4_md.avif 1600w, images/camp_4_lg.avif 2560w" 
+                  src="images/camp_4_md.avif">
+              </div>
+              <div class="carousel-slide">
+                <img loading="lazy" decoding="async" alt="Camp scene 5"
+                  data-name="camp_5" data-cap="Daily life and basic survival activities continue amidst challenging conditions in the camps."
+                  sizes="(max-width: 700px) 92vw, 42vw" 
+                  srcset="images/camp_5_sm.avif 800w, images/camp_5_md.avif 1600w, images/camp_5_lg.avif 2560w" 
+                  src="images/camp_5_md.avif">
+              </div>
+            </div>
+            
+            <!-- Side Navigation Arrows -->
+            <button type="button" class="carousel-btn prev" aria-label="Previous image">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M15 19l-7-7 7-7" /></svg>
+            </button>
+            <button type="button" class="carousel-btn next" aria-label="Next image">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 5l7 7-7 7" /></svg>
+            </button>
+            
+            <!-- Carousel Dots -->
+            <div class="carousel-dots">
+              <span class="carousel-dot active"></span>
+              <span class="carousel-dot"></span>
+              <span class="carousel-dot"></span>
+            </div>
+          </div>
+          <figcaption id="carousel-outer-caption">Refugees navigate makeshift paths through the dense camp settlements.</figcaption>
+        </figure>
       </div>
     </section>
 
@@ -1471,7 +1708,7 @@
           if (t === 'image') return { type: 'image', point: +s.dataset.point };
           if (t === 'bypass') return { type: 'bypass', which: s.dataset.which, point: +s.dataset.point };
           if (t === 'entry') return { type: 'entry' };
-          if (t === 'intro') return { type: 'overview', variant: 'intro' };
+          if (t === 'intro' || t === 'context' || t === 'context-image') return { type: 'overview', variant: 'intro' };
           return { type: 'overview', variant: 'outro' };
         });
         const crd = secs.map(s => s.querySelector('.story-card, .photo-card'));
@@ -1481,6 +1718,7 @@
       const scenes = __built.scenes, sections = __built.sections, cards = __built.cards;
       const mendonBypassIdx = scenes.findIndex(s => s.type === 'bypass' && s.which === 'mendon');
       const alikadamBypassIdx = scenes.findIndex(s => s.type === 'bypass' && s.which === 'alikadam');
+      const entrySceneIdx = scenes.findIndex(s => s.type === 'entry');
 
       const MOBILE_BREAKPOINT = 700;
       const NAV_RESERVE = 64;
@@ -1723,12 +1961,13 @@
         currentScene = i;
         const sc = scenes[i];
 
+        const isContextImage = (sections[i].dataset.type === 'context-image');
         const hasPoint = (sc.type === 'point' || sc.type === 'image' || sc.type === 'bypass');
         document.body.classList.toggle('is-overview', sc.type === 'overview');
         document.body.classList.toggle('is-entry', sc.type === 'entry');
-        document.body.classList.toggle('is-image', sc.type === 'image');
+        document.body.classList.toggle('is-image', sc.type === 'image' || isContextImage);
         document.body.classList.toggle('is-bypass', sc.type === 'bypass');
-        document.body.classList.toggle('entry-shown', i >= 1);   // crossing paths persist from the entry scene onward
+        document.body.classList.toggle('entry-shown', i >= entrySceneIdx);   // crossing paths persist from the entry scene onward
         document.body.classList.toggle('show-bypass-mendon', mendonBypassIdx >= 0 && i >= mendonBypassIdx);
         document.body.classList.toggle('show-bypass-alikadam', alikadamBypassIdx >= 0 && i >= alikadamBypassIdx);
         const activePt = hasPoint ? sc.point : (sc.type === 'entry' ? 0 : -1);
@@ -1737,7 +1976,17 @@
         updateNav();
 
         targetLen = hasPoint ? waypointLen[sc.point] : ((sc.type === 'overview' && sc.variant === 'outro') ? totalMeters : 0);
-        entryTarget = i >= 1 ? 1 : 0;   // keep the two crossing paths drawn for the rest of the journey
+        entryTarget = i >= entrySceneIdx ? 1 : 0;   // keep the two crossing paths drawn for the rest of the journey
+
+        // Handle carousel autoplay
+        if (carouselSec) {
+          const isCarouselScene = (sections[i] === carouselSec);
+          if (isCarouselScene) {
+            startCarouselAutoplay();
+          } else {
+            stopCarouselAutoplay();
+          }
+        }
 
         const animate = !(prev < 0 || prefersReduced);
         frameScene(i, animate, durFor(prev, i));
@@ -1790,15 +2039,85 @@
       window.addEventListener('resize', onResize, { passive: true });
       window.addEventListener('orientationchange', onResize, { passive: true });
 
+      /* ---------- CAROUSEL CONTROLLER ---------- */
+      let carouselInterval = null;
+      let carouselActiveIdx = 0;
+      let carouselSlides = null;
+      let carouselDots = null;
+      let carouselOuterCaption = null;
+      let carouselSec = null;
+
+      function initCarousel() {
+        carouselSec = document.getElementById('context-carousel-section');
+        if (!carouselSec) return;
+        carouselSlides = carouselSec.querySelectorAll('.carousel-slide');
+        carouselDots = carouselSec.querySelectorAll('.carousel-dot');
+        carouselOuterCaption = document.getElementById('carousel-outer-caption');
+
+        carouselSec.querySelector('.carousel-btn.prev').addEventListener('click', (e) => {
+          e.stopPropagation();
+          showCarouselSlide(carouselActiveIdx - 1);
+          startCarouselAutoplay();
+        });
+
+        carouselSec.querySelector('.carousel-btn.next').addEventListener('click', (e) => {
+          e.stopPropagation();
+          showCarouselSlide(carouselActiveIdx + 1);
+          startCarouselAutoplay();
+        });
+
+        carouselDots.forEach((dot, k) => {
+          dot.addEventListener('click', (e) => {
+            e.stopPropagation();
+            showCarouselSlide(k);
+            startCarouselAutoplay();
+          });
+        });
+      }
+
+      function showCarouselSlide(idx) {
+        if (!carouselSlides || carouselSlides.length === 0) return;
+        if (idx >= carouselSlides.length) idx = 0;
+        if (idx < 0) idx = carouselSlides.length - 1;
+        carouselActiveIdx = idx;
+        carouselSlides.forEach((slide, k) => {
+          slide.classList.toggle('active', k === idx);
+        });
+        carouselDots.forEach((dot, k) => {
+          dot.classList.toggle('active', k === idx);
+        });
+        const activeImg = carouselSlides[idx].querySelector('img');
+        if (activeImg && carouselOuterCaption) {
+          carouselOuterCaption.textContent = activeImg.dataset.cap || activeImg.alt;
+        }
+      }
+
+      function startCarouselAutoplay() {
+        stopCarouselAutoplay();
+        carouselInterval = setInterval(() => {
+          showCarouselSlide(carouselActiveIdx + 1);
+        }, 3200);
+      }
+
+      function stopCarouselAutoplay() {
+        if (carouselInterval) {
+          clearInterval(carouselInterval);
+          carouselInterval = null;
+        }
+      }
+
       /* ---------- BOOT ---------- */
       if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
       function boot() {
         window.scrollTo(0, 0);
+        initCarousel();
         map.invalidateSize({ animate: false });
         measureCard();
         setActiveScene(0);            // snaps to intro overview
-        preloadScene(1);              // warm entry-crossing tiles
-        preloadScene(2);              // warm Fatra Para tiles
+        if (entrySceneIdx >= 0) {
+          preloadScene(entrySceneIdx);
+          preloadScene(entrySceneIdx + 1);
+        }
         readScroll();
       }
       if (document.readyState === 'loading') window.addEventListener('DOMContentLoaded', boot);
@@ -1815,6 +2134,7 @@
       const lightboxCap = document.getElementById('lightbox-cap');
       function openLightbox(name, cap) {
         if (!name) return;
+        stopCarouselAutoplay();
         lightboxImg.srcset = 'images/' + name + '_sm.avif 800w, images/' + name + '_md.avif 1600w, images/' + name + '_lg.avif 2560w';
         lightboxImg.sizes = '96vw';
         lightboxImg.src = 'images/' + name + '_lg.avif';
@@ -1828,6 +2148,9 @@
         lightbox.classList.remove('open');
         lightbox.setAttribute('aria-hidden', 'true');
         document.body.style.overflow = '';
+        if (sections[currentScene] === carouselSec) {
+          startCarouselAutoplay();
+        }
       }
       document.addEventListener('click', (e) => {
         const t = e.target;
