@@ -10,6 +10,17 @@
     content="An interactive map tracing a documented Rohingya border-crossing route from the zero-line near Fatra Para down to Alikadam Bazar.">
   <meta name="author" content="Mir">
   <meta name="robots" content="noindex">
+  
+  <!-- Open Graph / Social Media Meta Tags -->
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="Traces in the Dark: The Alikadam Crossing Corridor">
+  <meta property="og:description" content="An interactive map tracing a documented Rohingya border-crossing route from the zero-line near Fatra Para down to Alikadam Bazar.">
+  <meta property="og:image" content="images/og_image.JPG">
+  
+  <meta property="twitter:card" content="summary_large_image">
+  <meta property="twitter:title" content="Traces in the Dark: The Alikadam Crossing Corridor">
+  <meta property="twitter:description" content="An interactive map tracing a documented Rohingya border-crossing route from the zero-line near Fatra Para down to Alikadam Bazar.">
+  <meta property="twitter:image" content="images/og_image.JPG">
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -651,8 +662,14 @@
     .brand {
       display: flex;
       align-items: center;
-      gap: 8px;
-      padding: 8px 12px;
+      pointer-events: auto;
+    }
+
+    .brand-logo {
+      height: 24px;
+      width: auto;
+      display: block;
+      filter: brightness(0) invert(1);
     }
 
     .brand .live-dot {
@@ -1128,7 +1145,10 @@
   </div>
 
   <div class="hud">
-    <div class="panel brand"><span class="live-dot"></span><span class="title">Alikadam Crossing Corridor</span>
+    <div class="brand">
+      <a href="https://www.thedailystar.net/" target="_blank" rel="noopener noreferrer">
+        <img src="logo.svg" alt="The Daily Star" class="brand-logo">
+      </a>
     </div>
     <div class="panel legend" aria-hidden="true">
 
