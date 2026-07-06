@@ -13,6 +13,9 @@
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preconnect" href="https://server.arcgisonline.com" crossorigin>
+  <link rel="dns-prefetch" href="https://server.arcgisonline.com">
+  <link rel="preconnect" href="https://unpkg.com" crossorigin>
   <link
     href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap"
     rel="stylesheet">
@@ -213,6 +216,24 @@
       animation: none;
     }
 
+    /* Detached stop (Fatra Para): off the travel line — a hollow marker we only
+       zoom to. Stays subtle and un-numbered, even in overview mode. */
+    .detached-marker .mk-dot {
+      background: rgba(245, 158, 11, 0.20);
+      border: 2px solid var(--accent);
+      box-shadow: 0 0 9px rgba(245, 158, 11, 0.6);
+    }
+
+    body.is-overview .detached-marker .mk-dot {
+      width: 12px;
+      height: 12px;
+      border: 2px solid var(--accent);
+    }
+
+    body.is-overview .detached-marker .mk-num {
+      display: none;
+    }
+
     /* ===== BORDER ENTRY: two crossings + converging paths ===== */
     /* Paths persist once revealed (entry scene onward); dots/labels show only in the entry scene. */
     .entry-path {
@@ -314,7 +335,7 @@
     }
 
     .story-card-wrapper.photo-wrapper {
-      max-width: clamp(360px, 42vw, 680px);
+      max-width: min(920px, 75vw);
     }
 
     .photo-card {
@@ -361,10 +382,29 @@
     /* ===== CONTEXT & CAROUSEL ===== */
     .context-text {
       font-size: 16px;
-      font-weight: 300;
+      font-weight: 400;
       line-height: 1.75;
-      color: var(--text);
+      color: #fff;
       margin: 12px 0 0;
+    }
+
+    .drop-cap {
+      font-size: 26px;
+      font-style: italic;
+      color: var(--accent);
+      font-weight: 700;
+    }
+
+    .highlight-text {
+      font-size: 15.5px;
+      font-style: italic;
+      color: #fff;
+      border-left: 2px solid var(--accent);
+      border-right: 2px solid var(--accent);
+      padding-left: 14px;
+      padding-right: 14px;
+      margin-top: 18px;
+      line-height: 1.6;
     }
 
     .carousel-frame {
@@ -858,7 +898,8 @@
 
     .intro-card p {
       font-size: 15px;
-      color: var(--text-dim);
+      color: #fff;
+      font-weight: 400;
     }
 
     .intro-card .credits {
@@ -1126,8 +1167,8 @@
         <article class="story-card intro-card">
           <div class="eyebrow">Border Crossing</div>
           <h1>The Alikadam Corridor</h1>
-          <p>A documented Rohingya infiltration route — eleven waypoints from the zero-line on the Myanmar border down
-            to Alikadam Bazar.</p>
+          <p>A documented Rohingya border crossing route - one group's ~54&nbsp;km journey from the zero-line on the
+            Myanmar border down to Alikadam Bazar.</p>
           <div class="credits">
             <span><em>Reporting:</em> Sajjad Hossain</span>
             <span><em>Visualization:</em> Mir Rownak</span>
@@ -1140,8 +1181,11 @@
     <section class="story-section intro" data-type="context">
       <div class="story-card-wrapper">
         <article class="story-card intro-card">
-          <div class="eyebrow">Historical Context</div>
-          <p class="context-text">For decades, Rohingya people have fled Myanmar and sought refuge in Bangladesh due to persecution and violence. Since 1978, several waves of Rohingya have crossed the border to flee military crackdowns and unrest.</p>
+
+          <p class="context-text"><span class="drop-cap">F</span>or decades, Rohingya people have fled Myanmar and
+            sought refuge in Bangladesh due to
+            persecution and violence. Since 1978, several waves of Rohingya have crossed the border to flee military
+            crackdowns and unrest.</p>
         </article>
       </div>
     </section>
@@ -1151,13 +1195,14 @@
       <div class="story-card-wrapper photo-wrapper">
         <figure class="photo-card">
           <div class="photo-frame">
-            <img loading="lazy" decoding="async" alt="Rohingya camp overview"
-              data-name="camp_1" data-cap="Rohingya refugees seek shelter in Bangladesh, establishing massive makeshift settlements."
-              sizes="(max-width: 700px) 92vw, 42vw" 
-              srcset="images/camp_1_sm.avif 800w, images/camp_1_md.avif 1600w, images/camp_1_lg.avif 2560w" 
+            <img loading="lazy" decoding="async" alt="Rohingya camp overview" data-name="camp_1"
+              data-cap="Rohingya refugees seek shelter in Bangladesh, establishing massive makeshift settlements."
+              sizes="(max-width: 700px) 92vw, 42vw"
+              srcset="images/camp_1_sm.avif 800w, images/camp_1_md.avif 1600w, images/camp_1_lg.avif 2560w"
               src="images/camp_1_md.avif">
           </div>
-          <figcaption>Rohingya refugees seek shelter in Bangladesh, establishing massive makeshift settlements.</figcaption>
+          <figcaption>Rohingya refugees seek shelter in Bangladesh, establishing massive makeshift settlements.
+          </figcaption>
         </figure>
       </div>
     </section>
@@ -1167,7 +1212,9 @@
       <div class="story-card-wrapper">
         <article class="story-card intro-card">
           <div class="eyebrow">The 2017 Crisis</div>
-          <p class="context-text">The largest influx occurred in 2017, when hundreds of thousands fled Myanmar to escape a brutal military campaign. According to government figures, around 12 lakh Rohingya from Myanmar are currently living in camps in Ukhiya and Teknaf.</p>
+          <p class="context-text">The largest influx occurred in 2017, when hundreds of thousands fled Myanmar to escape
+            a brutal military campaign. According to government figures, around 12 lakh Rohingya from Myanmar are
+            currently living in camps in Ukhiya and Teknaf.</p>
         </article>
       </div>
     </section>
@@ -1177,13 +1224,14 @@
       <div class="story-card-wrapper photo-wrapper">
         <figure class="photo-card">
           <div class="photo-frame">
-            <img loading="lazy" decoding="async" alt="Refugee shelters"
-              data-name="camp_2" data-cap="Crowded shelters sprawl across the hills of Ukhiya and Teknaf, home to over a million refugees."
-              sizes="(max-width: 700px) 92vw, 42vw" 
-              srcset="images/camp_2_sm.avif 800w, images/camp_2_md.avif 1600w, images/camp_2_lg.avif 2560w" 
+            <img loading="lazy" decoding="async" alt="Refugee shelters" data-name="camp_2"
+              data-cap="Crowded shelters sprawl across the hills of Ukhiya and Teknaf, home to over a million refugees."
+              sizes="(max-width: 700px) 92vw, 42vw"
+              srcset="images/camp_2_sm.avif 800w, images/camp_2_md.avif 1600w, images/camp_2_lg.avif 2560w"
               src="images/camp_2_md.avif">
           </div>
-          <figcaption>Crowded shelters sprawl across the hills of Ukhiya and Teknaf, home to over a million refugees.</figcaption>
+          <figcaption>Crowded shelters sprawl across the hills of Ukhiya and Teknaf, home to over a million refugees.
+          </figcaption>
         </figure>
       </div>
     </section>
@@ -1193,7 +1241,10 @@
       <div class="story-card-wrapper">
         <article class="story-card intro-card">
           <div class="eyebrow">Unofficial Transit</div>
-          <p class="context-text">However, Rohingya continue to enter Bangladesh through unofficial routes. Many use remote hill tracks and river crossings to avoid detection. As these movements take place outside formal border checkpoints, there are no reliable estimates of how many people are entering the country through these hidden routes.</p>
+          <p class="context-text">However, Rohingya continue to enter Bangladesh through unofficial routes. Many use
+            remote hill tracks and river crossings to avoid detection. As these movements take place outside formal
+            border checkpoints, there are no reliable estimates of how many people are entering the country through
+            these hidden routes.</p>
         </article>
       </div>
     </section>
@@ -1205,36 +1256,40 @@
           <div class="photo-frame carousel-frame">
             <div class="carousel-slides">
               <div class="carousel-slide active">
-                <img loading="lazy" decoding="async" alt="Camp scene 3"
-                  data-name="camp_3" data-cap="Refugees navigate makeshift paths through the dense camp settlements."
-                  sizes="(max-width: 700px) 92vw, 42vw" 
-                  srcset="images/camp_3_sm.avif 800w, images/camp_3_md.avif 1600w, images/camp_3_lg.avif 2560w" 
+                <img loading="lazy" decoding="async" alt="Camp scene 3" data-name="camp_3"
+                  data-cap="Refugees navigate makeshift paths through the dense camp settlements."
+                  sizes="(max-width: 700px) 92vw, 42vw"
+                  srcset="images/camp_3_sm.avif 800w, images/camp_3_md.avif 1600w, images/camp_3_lg.avif 2560w"
                   src="images/camp_3_md.avif">
               </div>
               <div class="carousel-slide">
-                <img loading="lazy" decoding="async" alt="Camp scene 4"
-                  data-name="camp_4" data-cap="Temporary shelters constructed from bamboo and tarpaulin cover the landscape."
-                  sizes="(max-width: 700px) 92vw, 42vw" 
-                  srcset="images/camp_4_sm.avif 800w, images/camp_4_md.avif 1600w, images/camp_4_lg.avif 2560w" 
+                <img loading="lazy" decoding="async" alt="Camp scene 4" data-name="camp_4"
+                  data-cap="Temporary shelters constructed from bamboo and tarpaulin cover the landscape."
+                  sizes="(max-width: 700px) 92vw, 42vw"
+                  srcset="images/camp_4_sm.avif 800w, images/camp_4_md.avif 1600w, images/camp_4_lg.avif 2560w"
                   src="images/camp_4_md.avif">
               </div>
               <div class="carousel-slide">
-                <img loading="lazy" decoding="async" alt="Camp scene 5"
-                  data-name="camp_5" data-cap="Daily life and basic survival activities continue amidst challenging conditions in the camps."
-                  sizes="(max-width: 700px) 92vw, 42vw" 
-                  srcset="images/camp_5_sm.avif 800w, images/camp_5_md.avif 1600w, images/camp_5_lg.avif 2560w" 
+                <img loading="lazy" decoding="async" alt="Camp scene 5" data-name="camp_5"
+                  data-cap="Daily life and basic survival activities continue amidst challenging conditions in the camps."
+                  sizes="(max-width: 700px) 92vw, 42vw"
+                  srcset="images/camp_5_sm.avif 800w, images/camp_5_md.avif 1600w, images/camp_5_lg.avif 2560w"
                   src="images/camp_5_md.avif">
               </div>
             </div>
-            
+
             <!-- Side Navigation Arrows -->
             <button type="button" class="carousel-btn prev" aria-label="Previous image">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M15 19l-7-7 7-7" /></svg>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                <path d="M15 19l-7-7 7-7" />
+              </svg>
             </button>
             <button type="button" class="carousel-btn next" aria-label="Next image">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 5l7 7-7 7" /></svg>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                <path d="M9 5l7 7-7 7" />
+              </svg>
             </button>
-            
+
             <!-- Carousel Dots -->
             <div class="carousel-dots">
               <span class="carousel-dot active"></span>
@@ -1242,19 +1297,35 @@
               <span class="carousel-dot"></span>
             </div>
           </div>
-          <figcaption id="carousel-outer-caption">Refugees navigate makeshift paths through the dense camp settlements.</figcaption>
+          <figcaption id="carousel-outer-caption">Refugees navigate makeshift paths through the dense camp settlements.
+          </figcaption>
         </figure>
       </div>
     </section>
 
-    <!-- BORDER ENTRY: two crossings converging on Fatra Para -->
+    <!-- LEAD-IN: the documented route -->
+    <section class="story-section intro" data-type="context">
+      <div class="story-card-wrapper">
+        <article class="story-card intro-card">
+          <div class="eyebrow">May 20, 2026</div>
+          <p class="context-text">On May 20, 2026, The Daily Star followed one such route. A group of 12 Rohingya,
+            including three women, entered Alikadam in Bandarban from Myanmar. The route is about 54 kilometres long —
+            hill streams, river crossings, forest paths and paved roads.</p>
+          <p class="highlight-text">Using the map, we traced how they travelled from the border area to Alikadam Bazar.
+          </p>
+        </article>
+      </div>
+    </section>
+
+    <!-- BORDER ENTRY: two crossings converging on Jurum Jhiri -->
     <section class="story-section" data-scene="1" data-type="entry">
       <div class="story-card-wrapper">
         <article class="story-card">
           <div class="eyebrow">Two Entry Points</div>
           <h2>Crossing the Zero-Line</h2>
-          <p>Rohingya breach the Myanmar border on two informal footpaths near pillars 59 to 61. Both converge on the
-            Mro village of Fatra Para — the first stop on Bangladeshi soil, where this route begins.</p>
+          <p>The group first gathered near pillars 56 and 61 on the Bangladesh–Myanmar border. Under cover of darkness
+            they slipped across on two informal footpaths, both converging at Jhurum Jhiri — the stream where the walk
+            into Bangladesh begins.</p>
         </article>
       </div>
     </section>
@@ -1263,12 +1334,11 @@
     <section class="story-section" data-scene="2" data-type="point" data-point="0">
       <div class="story-card-wrapper">
         <article class="story-card">
-          <div class="eyebrow">Border Village</div>
-          <h2>Silence at Fatra Para</h2>
-          <p>By 8:25pm on May 20, Fatra Para had fallen silent. The Mro village, tucked into the hills of Bandarban's
-            Alikadam upazila less than a kilometre from the Myanmar border, had shut down for the night. On a hillside
-            below, faint torch-beams emerged along the stream bed — three women in front, followed by a silent line of
-            men.</p>
+          <div class="eyebrow">The Descent</div>
+          <h2>Into Jhurum Jhiri</h2>
+          <p>Faint torch-beams move along the stream bed — three women in front, followed by a silent line of men. After
+            crossing Jhurum Jhiri, the group starts walking through the hills, moving in near-total silence under the
+            forest canopy.</p>
         </article>
       </div>
     </section>
@@ -1276,23 +1346,69 @@
     <section class="story-section" data-scene="3" data-type="point" data-point="1">
       <div class="story-card-wrapper">
         <article class="story-card">
-          <div class="eyebrow">The Descent</div>
-          <h2>Descending to Jurum Jhiri</h2>
-          <p>The journey begins before nightfall on the Myanmar side. Rohingya groups gather quietly on hilltops near
-            border pillars 59 to 61. Once darkness thickens across the forest, they descend a steep ridge and cross the
-            stream at Jurum Jhiri to enter Bangladesh.</p>
+          <div class="eyebrow">Wet Transit</div>
+          <h2>An Hour to Fatra Jhiri</h2>
+          <p>After walking for about an hour, they reach Fatra Jhiri, near Fatra Para. Muddy and waist-deep in places,
+            this stream is linked to the Matamuhuri River — travellers remove their shoes to wade through, risking cuts
+            from stones and roots.</p>
         </article>
+      </div>
+    </section>
+
+    <!-- DETACHED STOP: Fatra Para (no route line runs in or out — we only zoom to it) -->
+    <section class="story-section" data-type="detached" data-detach="fatra" data-point="1">
+      <div class="story-card-wrapper">
+        <article class="story-card">
+          <div class="eyebrow">Beside the Stream</div>
+          <h2>Fatra Para</h2>
+          <p>Fatra Jhiri runs wide and long, passing right beside Fatra Para — a small Mro village barely 1,500 metres
+            from the border. The group never enters it, keeping to the stream and the hills, but from here the border
+            itself is in plain view.</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="story-section" data-type="image" data-detach="fatra" data-point="1">
+      <div class="story-card-wrapper photo-wrapper">
+        <figure class="photo-card">
+          <div class="photo-frame">
+            <img loading="lazy" decoding="async"
+              alt="The entrance to Fatrapara, where nearly two dozen families lived, situated 1,483 metres from the Bangladesh-Myanmar border."
+              data-name="fatra_para1"
+              data-cap="The entrance to Fatrapara, where nearly two dozen families lived, situated 1,483 metres from the Bangladesh-Myanmar border."
+              sizes="(max-width: 700px) 92vw, 42vw"
+              srcset="images/fatra_para1_sm.avif 800w, images/fatra_para1_md.avif 1600w, images/fatra_para1_lg.avif 2560w"
+              src="images/fatra_para1_md.avif">
+          </div>
+          <figcaption>The entrance to Fatrapara, where nearly two dozen families lived, situated 1,483 metres from the
+            Bangladesh-Myanmar border.</figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <section class="story-section" data-type="image" data-detach="fatra" data-point="1">
+      <div class="story-card-wrapper photo-wrapper">
+        <figure class="photo-card">
+          <div class="photo-frame">
+            <img loading="lazy" decoding="async" alt="The border area can be seen from Fatra Para village"
+              data-name="fatra_para2" data-cap="The border area can be seen from Fatra Para village"
+              sizes="(max-width: 700px) 92vw, 42vw"
+              srcset="images/fatra_para2_sm.avif 800w, images/fatra_para2_md.avif 1600w, images/fatra_para2_lg.avif 2560w"
+              src="images/fatra_para2_md.avif">
+          </div>
+          <figcaption>The border area can be seen from Fatra Para village</figcaption>
+        </figure>
       </div>
     </section>
 
     <section class="story-section" data-scene="4" data-type="point" data-point="2">
       <div class="story-card-wrapper">
         <article class="story-card">
-          <div class="eyebrow">Wet Transit</div>
-          <h2>The Muddy Waters of Fatra Jhiri</h2>
-          <p>Moving in absolute silence, it takes about an hour to reach Fatra Jhiri. This stretch is grueling. The
-            stream is muddy and waist-deep in places, forcing travellers to remove their shoes and carry them, risking
-            cuts from stones and roots.</p>
+          <div class="eyebrow">The River Route</div>
+          <h2>Down to Pahar Bhanga</h2>
+          <p>From Fatra Jhiri, they walk about two kilometres to Pahar Bhanga. The village sits on a hilltop with the
+            Matamuhuri River flowing below — and from here the group leaves the streams behind to follow the river
+            route.</p>
         </article>
       </div>
     </section>
@@ -1300,10 +1416,11 @@
     <section class="story-section" data-scene="5" data-type="point" data-point="3">
       <div class="story-card-wrapper">
         <article class="story-card">
-          <div class="eyebrow">Physical Exhaustion</div>
-          <h2>Exhaustion at Pahar Bhanga</h2>
-          <p>After wading through the water, the groups push towards Pahar Bhanga near the Matamuhuri River, roughly
-            five kilometres from the border. By this point, travellers are completely soaked and exhausted.</p>
+          <div class="eyebrow">Night Halt</div>
+          <h2>Resting at Shindhu Mukh</h2>
+          <p>They pause at several places along the way. Following the river, the group reaches Shindhu Mukh in the dark
+            and rests there through the night — watching the water, ready to vanish into the forest canopy if anyone
+            approaches.</p>
         </article>
       </div>
     </section>
@@ -1311,11 +1428,11 @@
     <section class="story-section" data-scene="6" data-type="point" data-point="4">
       <div class="story-card-wrapper">
         <article class="story-card">
-          <div class="eyebrow">Forest Cover</div>
-          <h2>Safe Haven at Shindhu Mukh</h2>
-          <p>In the early hours, they reach Shindhu Mukh, a remote riverside area. They wait here because they can watch
-            for movement — if they sense anyone approaching, they vanish into the forest canopy where security forces
-            rarely go at night.</p>
+          <div class="eyebrow">Morning Road</div>
+          <h2>Darimukh Para: The Paved Road</h2>
+          <p>The next morning they change into dry clothes and set off again, crossing about five kilometres by river to
+            reach Darimukh Para. Here the paved road finally begins, and motorcycles pick them up for the ride towards
+            Alikadam Bazar.</p>
         </article>
       </div>
     </section>
@@ -1323,11 +1440,10 @@
     <section class="story-section" data-scene="7" data-type="point" data-point="5">
       <div class="story-card-wrapper">
         <article class="story-card">
-          <div class="eyebrow">The Roadway</div>
-          <h2>Dori Para: The Paved Road</h2>
-          <p>At first light, the journey resumes. Some change into dry clothes before heading towards Dori Para, where
-            the paved road begins. From here, motorcycles pick them up in stages to begin the 40km trip towards Alikadam
-            Bazar.</p>
+          <div class="eyebrow">First Checkpoint</div>
+          <h2>Past the Poamuhuri BGB Post</h2>
+          <p>On the road, they first reach the Poamuhuri BGB checkpoint. The motorbikes slow but do not stop; after some
+            questioning, the riders are allowed to go on.</p>
         </article>
       </div>
     </section>
@@ -1335,11 +1451,11 @@
     <section class="story-section" data-scene="8" data-type="point" data-point="6">
       <div class="story-card-wrapper">
         <article class="story-card">
-          <div class="eyebrow">Surveillance Barrier</div>
-          <h2>Poamuhuri Checkpoint Evasion</h2>
-          <p>At the Poamuhuri BGB checkpoint, a motorbike carrying two Rohingya passengers slows but does not stop.
-            Following a brief verbal declaration to a guard on duty, the bike is waved through without further
-            screening.</p>
+          <div class="eyebrow">The Bypass</div>
+          <h2>Slipping Past Mendon Para</h2>
+          <p>At the Mendon Para army checkpoint, the passengers get off before the post and take a narrow hill path
+            alongside the road to avoid it. Once past the checkpoint area, they return to the road and climb back onto
+            the motorcycles.</p>
         </article>
       </div>
     </section>
@@ -1347,11 +1463,10 @@
     <section class="story-section" data-scene="9" data-type="point" data-point="7">
       <div class="story-card-wrapper">
         <article class="story-card">
-          <div class="eyebrow">Bypass Road</div>
-          <h2>The Footpaths of Mendon Para</h2>
-          <p>Near an army post at Mendon Para, passengers get off before the checkpoint. They take a narrow hill path
-            running alongside the main road to evade detection. The motorcycle crosses the post completely empty and
-            picks them up on the other side.</p>
+          <div class="eyebrow">Waved Through</div>
+          <h2>Crossing Krilai Para</h2>
+          <p>The group then crosses the Krilai Para BGB post. Here too they are allowed to pass, and the ride continues
+            — about 17 more kilometres of road towards Alikadam.</p>
         </article>
       </div>
     </section>
@@ -1359,10 +1474,10 @@
     <section class="story-section" data-scene="10" data-type="point" data-point="8">
       <div class="story-card-wrapper">
         <article class="story-card">
-          <div class="eyebrow">Security Gap</div>
-          <h2>Krilai Para Surveillance Gap</h2>
-          <p>The next barrier is the Krilai Para BGB post. In the field, a lone guard on duty — speaking on a phone —
-            simply waves transport vehicles through without performing identity or security checks.</p>
+          <div class="eyebrow">The Final Detour</div>
+          <h2>Around the Last Checkpoint</h2>
+          <p>To avoid the Alikadam army checkpoint, they break away from the main road and go through Mongcha Para —
+            crossing the Matamuhuri River one last time to slip into Alikadam Bazar unseen.</p>
         </article>
       </div>
     </section>
@@ -1370,44 +1485,32 @@
     <section class="story-section" data-scene="11" data-type="point" data-point="9">
       <div class="story-card-wrapper">
         <article class="story-card">
-          <div class="eyebrow">Urban Bypass</div>
-          <h2>The Final Detour</h2>
-          <p>Instead of approaching the final army checkpoint outside Alikadam Bazar via the main road, passengers exit
-            the vehicles early to bypass the tracking cordon on foot.</p>
-        </article>
-      </div>
-    </section>
-
-    <section class="story-section" data-scene="12" data-type="point" data-point="10">
-      <div class="story-card-wrapper">
-        <article class="story-card">
           <div class="eyebrow">Terminal Point</div>
           <h2>Arrival at Alikadam Bazar</h2>
-          <p>Passengers cross through Nayapara and Mongcha Para before wading over the Matamuhuri River a final time.
-            Once clear of the cordon, they disappear into Alikadam Bazar, taking up low-paid, unnegotiable labour in
-            local markets, tea stalls, and construction sites.</p>
+          <p>After the river crossing at Mongcha Para, the group reaches Alikadam Bazar. From there they disperse to
+            different places, taking up low-paid, unnegotiable labour in local markets, tea stalls, and construction
+            sites.</p>
         </article>
       </div>
     </section>
 
     <!-- OUTRO OVERVIEW -->
-    <section class="story-section" data-scene="13" data-type="outro">
+    <section class="story-section" data-scene="12" data-type="outro">
       <div class="story-card-wrapper">
         <article class="story-card outro-card">
           <div class="eyebrow">The Full Route</div>
-          <h2>Eleven waypoints, ~56&nbsp;km</h2>
+          <h2>Ten waypoints, ~54&nbsp;km</h2>
           <ol class="route-list">
-            <li><b>01</b><span>Fatra Para</span></li>
-            <li><b>02</b><span>Jurum Jhiri</span></li>
-            <li><b>03</b><span>Fatra Jhiri</span></li>
-            <li><b>04</b><span>Pahar Bhanga</span></li>
-            <li><b>05</b><span>Shindhu Mukh</span></li>
-            <li><b>06</b><span>Dori Para</span></li>
-            <li><b>07</b><span>Poamuhuri BGB</span></li>
-            <li><b>08</b><span>Mendon Para</span></li>
-            <li><b>09</b><span>Krilai Para BGB</span></li>
-            <li><b>10</b><span>Alikadam Bazar</span></li>
-            <li><b>11</b><span>Mongcha Para</span></li>
+            <li><b>01</b><span>Jhurum Jhiri</span></li>
+            <li><b>02</b><span>Fatra Jhiri</span></li>
+            <li><b>03</b><span>Pahar Bhanga</span></li>
+            <li><b>04</b><span>Shindhu Mukh</span></li>
+            <li><b>05</b><span>Darimukh Para</span></li>
+            <li><b>06</b><span>Poamuhuri BGB</span></li>
+            <li><b>07</b><span>Mendon Para</span></li>
+            <li><b>08</b><span>Krilai Para BGB</span></li>
+            <li><b>09</b><span>Alikadam Bazar</span></li>
+            <li><b>10</b><span>Mongcha Para</span></li>
           </ol>
         </article>
       </div>
@@ -1430,12 +1533,11 @@
 
       /* ---------- DATA (full-precision KML, Powamuhuri 2 excluded) ---------- */
       const storyData = [
-        { title: "Fatra Para", coordinates: [21.37854971886697, 92.49390798525721], zoom: 15.5 },
-        { title: "Jurum Jhiri", coordinates: [21.38160593891465, 92.49921783733319], zoom: 15.5 },
-        { title: "Fatra Jhiri", coordinates: [21.38943626284207, 92.49723934768053], zoom: 15.3 },
+        { title: "Jhurum Jhiri", coordinates: [21.38160593891465, 92.49921783733319], zoom: 15.4 },
+        { title: "Fatra Jhiri", coordinates: [21.38943626284207, 92.49723934768053], zoom: 15.2 },
         { title: "Pahar Bhanga", coordinates: [21.39995198690763, 92.49494924434197], zoom: 14.6 },
         { title: "Shindhu Mukh", coordinates: [21.43096814003957, 92.47245247995323], zoom: 14.0 },
-        { title: "Dori Para", coordinates: [21.45676601164372, 92.45453420556284], zoom: 14.0 },
+        { title: "Darimukh Para", coordinates: [21.45676601164372, 92.45453420556284], zoom: 14.0 },
         { title: "Poamuhuri BGB Checkpoint", coordinates: [21.46788877604238, 92.41941102957639], zoom: 13.4 },
         { title: "Mendon Para Army Post", coordinates: [21.54120837131384, 92.39942283510649], zoom: 13.0 },
         { title: "Krilai Para BGB Post", coordinates: [21.55691272414940, 92.38812766072461], zoom: 13.0 },
@@ -1445,19 +1547,25 @@
       const routeCoords = storyData.map(s => s.coordinates);
       const N = storyData.length;
 
+      /* ---------- DETACHED STOPS ----------
+         Framed and photographed, but deliberately OFF the travel line: no route
+         line runs in or out of them. Fatra Para sits right beside Fatra Jhiri;
+         the group never enters it, so we only zoom in to show the village. */
+      const DETACHED = {
+        fatra: { title: "Fatra Para", coordinates: [21.37854971886697, 92.49390798525721], zoom: 15.6 }
+      };
+
       /* ---------- TRUE INFILTRATION ROUTE ----------
-         Explicit high-fidelity path (911 vertices) stitched from
-         True_Infiltration_Route.kml (36 traced LineString segments) — it
-         follows the real footpaths and the Matamuhuri River, so activePath
-         and activeFlow snap to the actual geography. The 11 waypoints are
-         matched to their nearest path vertex (forward-constrained, so the
-         reveal knots stay monotonic). One stray mis-ordered point near Fatra
-         Jhiri was dropped; a ~261 m gap near Mendon Para is bridged straight. */
+         Explicit high-fidelity path stitched from True_Infiltration_Route.kml,
+         following the real footpaths and the Matamuhuri River, so activePath and
+         activeFlow snap to the actual geography. The route now BEGINS at Jurum
+         Jhiri (where the two border crossings converge); the old Fatra Para →
+         Jurum Jhiri lead-in was trimmed off, because Fatra Para is a detached
+         stop with no line. The 10 waypoints are matched to their nearest path
+         vertex (forward-constrained, so the reveal knots stay monotonic); a
+         ~261 m gap near Mendon Para is bridged straight. */
       const denseRoute = [
-        [21.378635, 92.493983], [21.378444, 92.494232], [21.37829, 92.494702], [21.378286, 92.494862], [21.378425, 92.495173], [21.378657, 92.49547],
-        [21.378832, 92.495582], [21.378987, 92.49582], [21.379275, 92.496182], [21.37941, 92.496363], [21.379702, 92.49651], [21.380105, 92.496474],
-        [21.380403, 92.496562], [21.38057, 92.496868], [21.38064, 92.497176], [21.380794, 92.497502], [21.38079, 92.497862], [21.380742, 92.498097],
-        [21.380733, 92.498513], [21.380827, 92.498819], [21.38108, 92.498998], [21.381265, 92.499089], [21.381435, 92.499125], [21.381623, 92.499252],
+        [21.381623, 92.499252],
         [21.381692, 92.498836], [21.381726, 92.498691], [21.381743, 92.498529], [21.381794, 92.498258], [21.381876, 92.498004], [21.381941, 92.497713],
         [21.382016, 92.497418], [21.382046, 92.49738], [21.382171, 92.497337], [21.38247, 92.497314], [21.382764, 92.497281], [21.38309, 92.497192],
         [21.383312, 92.497139], [21.383462, 92.49699], [21.38365, 92.496883], [21.38382, 92.496773], [21.38404, 92.496627], [21.384277, 92.496459],
@@ -1624,12 +1732,14 @@
       }
       const knotIdx = mapWaypointsToPath(denseRoute, routeCoords);
 
-      /* Two border crossings near Fatra Para (georeferenced from the source
-         imagery; both sit on the BD–Myanmar boundary SW and SE of the village). */
+      /* Two border crossings SW and SE of Jurum Jhiri (georeferenced from the
+         source imagery; both sit on the BD–Myanmar boundary). The two informal
+         footpaths converge on Jurum Jhiri, where the overland route begins —
+         they flank Fatra Para without touching it. */
       const entryWest = [21.3628, 92.4701];
       const entryEast = [21.3596, 92.5058];
-      const fatra = storyData[0].coordinates;
-      const entryBounds = L.latLngBounds([entryWest, entryEast, fatra]);
+      const converge = storyData[0].coordinates;   // Jurum Jhiri — convergence of the two crossings
+      const entryBounds = L.latLngBounds([entryWest, entryEast, converge]);
 
       /* ---------- STORY CONFIG ----------
          To add a photo: drop images/<name>_{sm,md,lg}.avif in /images and add
@@ -1642,15 +1752,13 @@
       function esc(t) { return String(t).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
 
       const EXTRAS = {
-        0: [img('fatra_para1', 'The entrance to Fatrapara, where nearly two dozen families lived, situated 1,483 metres from the Bangladesh-Myanmar border.'),
-        img('fatra_para2', 'The border area can be seen from Fatra Para village')],
-        3: [img('paharbhanga_para', 'Pahara Bhanga village sits on a hilltop, with the Matamuhuri River flowing below. Rohingya people use this route on foot.'),
+        2: [img('paharbhanga_para', 'Pahara Bhanga village sits on a hilltop, with the Matamuhuri River flowing below. Rohingya people use this route on foot.'),
         img('matamuhuri', 'The Matamuhuri River, originating in Myanmar’s North Arakan hills and entering Alikadam, is a vital waterway in Bandarban and Cox’s Bazar, known for its winding course and clear waters.')],
-        4: [img('jhum_ghar', 'At night, Rohingya people stay and rest in this jhum ghar near Sindhu Mukh.')],
-        5: [img('dori_para', 'Dori Para, where the paved road finally begins.')],
-        7: [bypass('mendon')],
-        9: [bypass('alikadam'), img('mongcha_para_bypass', 'Rohingya people cross the Matamuhuri River near Alikadam Bazar, avoiding the Bandarban army post, to enter the market.')],
-        10: [img('mongcha_para', 'Mongcha Para, the final destination, where the biker dropped off the passengers after they crossed the river.')]
+        3: [img('jhum_ghar', 'At night, Rohingya people stay and rest in this jhum ghar near Shindhu Mukh.')],
+        4: [img('dori_para', 'Darimukh Para, where the paved road finally begins.')],
+        6: [bypass('mendon')],
+        8: [bypass('alikadam'), img('mongcha_para_bypass', 'Rohingya people cross the Matamuhuri River near Alikadam Bazar, avoiding the Bandarban army post, to enter the market.')],
+        9: [img('mongcha_para', 'Mongcha Para, the final destination, where the biker dropped off the passengers after they crossed the river.')]
       };
       const BYPASS_INFO = {
         mendon: {
@@ -1705,7 +1813,8 @@
           s.dataset.scene = i;
           const t = s.dataset.type;
           if (t === 'point') return { type: 'point', point: +s.dataset.point };
-          if (t === 'image') return { type: 'image', point: +s.dataset.point };
+          if (t === 'image') return { type: 'image', point: +s.dataset.point, detach: s.dataset.detach || null };
+          if (t === 'detached') return { type: 'detached', detach: s.dataset.detach, point: +s.dataset.point };
           if (t === 'bypass') return { type: 'bypass', which: s.dataset.which, point: +s.dataset.point };
           if (t === 'entry') return { type: 'entry' };
           if (t === 'intro' || t === 'context' || t === 'context-image') return { type: 'overview', variant: 'intro' };
@@ -1735,7 +1844,7 @@
         scrollWheelZoom: false, doubleClickZoom: true, touchZoom: true,
         boxZoom: false, keyboard: false, dragging: false,
         zoomSnap: 0, zoomDelta: 0.5, minZoom: 10, maxZoom: 17
-      }).setView(fatra, 12);
+      }).setView(converge, 12);
       if (!isMobile()) map.dragging.enable();   // drag to explore (desktop; mobile keeps vertical scroll)
 
       const TILE_TEMPLATES = [
@@ -1746,7 +1855,7 @@
       L.tileLayer(TILE_TEMPLATES[0], Object.assign({ attribution: 'Imagery &copy; Esri, Maxar, Earthstar Geographics' }, tileOpts)).addTo(map);
       L.tileLayer(TILE_TEMPLATES[1], tileOpts).addTo(map);
 
-      L.polyline(denseRoute, { color: '#38bdf8', weight: 1.5, opacity: 0.4, dashArray: '3, 6', lineCap: 'round', lineJoin: 'round', interactive: false, smoothFactor: 0 }).addTo(map);
+      L.polyline(denseRoute, { color: '#38bdf8', weight: 1.5, opacity: 0.4, dashArray: '3, 6', lineCap: 'round', lineJoin: 'round', interactive: false, smoothFactor: 1.6 }).addTo(map);
       const activePath = L.polyline([], { color: '#f59e0b', weight: 3.5, opacity: 0.95, className: 'active-neon-path', interactive: false, smoothFactor: 0 }).addTo(map);
       const activeFlow = L.polyline([], { color: '#fff7e6', weight: 1.7, opacity: 0.9, className: 'flow-dash', interactive: false, smoothFactor: 1.5 }).addTo(map);
 
@@ -1758,6 +1867,16 @@
           iconSize: [22, 22], iconAnchor: [11, 11]
         }), keyboard: false, interactive: false
       }).addTo(map));
+
+      /* Detached-stop marker (Fatra Para): a labelled place off the travel line,
+         highlighted only while its own scene is active. No number badge. */
+      const fatraMarker = L.marker(DETACHED.fatra.coordinates, {
+        icon: L.divIcon({
+          className: 'custom-marker detached-marker',
+          html: '<div class="mk-pulse"></div><div class="mk-dot"></div><div class="mk-label">' + DETACHED.fatra.title + '</div>',
+          iconSize: [22, 22], iconAnchor: [11, 11]
+        }), keyboard: false, interactive: false
+      }).addTo(map);
 
       const overviewBounds = L.latLngBounds(routeCoords);
 
@@ -1795,8 +1914,8 @@
         }
         return out.length >= 2 ? out : [];
       }
-      const curveW = curveTo(entryWest, fatra, -0.13), curveWc = cumOf(curveW);
-      const curveE = curveTo(entryEast, fatra, 0.13), curveEc = cumOf(curveE);
+      const curveW = curveTo(entryWest, converge, -0.13), curveWc = cumOf(curveW);
+      const curveE = curveTo(entryEast, converge, 0.13), curveEc = cumOf(curveE);
       const entryStyle = { color: '#f59e0b', weight: 3, opacity: 0.95, className: 'entry-path', interactive: false, smoothFactor: 0 };
       const entryPathW = L.polyline([], entryStyle).addTo(map);
       const entryPathE = L.polyline([], entryStyle).addTo(map);
@@ -1879,12 +1998,60 @@
       }
       function preloadScene(i) {
         const sc = scenes[i]; if (!sc) return;
-        if (sc.type === 'point' || sc.type === 'image') { const s = storyData[sc.point]; preloadView(s.coordinates[0], s.coordinates[1], s.zoom, 2); }
+        if (sc.type === 'point' || sc.type === 'image' || sc.type === 'detached') { const s = focusOf(sc); preloadView(s.coordinates[0], s.coordinates[1], s.zoom, 2); }
         else if (sc.type === 'bypass') { const b = bypassBounds[sc.which]; const c = b.getCenter(); preloadView(c.lat, c.lng, map.getBoundsZoom(b, false), 2); }
         else if (sc.type === 'entry') { const c = entryBounds.getCenter(); preloadView(c.lat, c.lng, map.getBoundsZoom(entryBounds, false), 2); }
         else { const c = overviewBounds.getCenter(); preloadView(c.lat, c.lng, map.getBoundsZoom(overviewBounds, false), 2); }
       }
-      function preloadNeighbors() { preloadScene(currentScene + 1); preloadScene(currentScene - 1); }
+      function preloadNeighbors() {
+        preloadScene(currentScene + 1); preloadScene(currentScene - 1);
+        // warm the photos a couple of scenes out so they resolve from cache
+        preloadSceneImages(currentScene); preloadSceneImages(currentScene + 1);
+        preloadSceneImages(currentScene + 2); preloadSceneImages(currentScene - 1);
+      }
+
+      /* ---------- IMAGE PRELOAD (warm cache so photos appear instantly) ----------
+         Photo cards keep loading="lazy" (initial paint stays light), but we
+         pre-fetch each image ahead of use — neighbouring scenes eagerly, the
+         rest during idle time — with the SAME srcset + sizes the DOM <img> uses,
+         so the browser fetches the exact file it will later display and the
+         on-screen image resolves instantly from cache. */
+      const IMG_SIZES_ATTR = '(max-width: 700px) 92vw, 42vw';
+      const imgPreloaded = new Set();
+      function preloadImageName(name) {
+        if (!name || imgPreloaded.has(name)) return;
+        imgPreloaded.add(name);
+        const im = new Image();
+        im.decoding = 'async';
+        if ('fetchPriority' in im) im.fetchPriority = 'low';
+        im.src = 'images/' + name + '_sm.avif';   // smallest variant — fastest to fetch
+      }
+
+      /* Force every inline photo to the smallest (sm) variant on ALL screens for
+         the fastest possible loads. loading="lazy" defers each fetch, and this
+         runs synchronously during boot (before the lazy fetch fires), so no
+         larger variant is ever requested — static and generated <img>s alike. */
+      function useSmallestImages() {
+        document.querySelectorAll('.photo-card img[data-name], .carousel-slide img[data-name]').forEach(im => {
+          im.removeAttribute('srcset');
+          im.removeAttribute('sizes');
+          im.src = 'images/' + im.dataset.name + '_sm.avif';
+        });
+      }
+      function preloadSceneImages(i) {
+        const sec = sections[i]; if (!sec) return;
+        sec.querySelectorAll('img[data-name]').forEach(im => preloadImageName(im.dataset.name));
+      }
+      let allImageNames = null;
+      function idlePreloadAllImages() {
+        if (!allImageNames) allImageNames = Array.from(document.querySelectorAll('img[data-name]')).map(im => im.dataset.name);
+        const idle = window.requestIdleCallback || function (cb) { return setTimeout(function () { cb({ timeRemaining: function () { return 8; } }); }, 250); };
+        let k = 0;
+        (function step(deadline) {
+          while (k < allImageNames.length && (!deadline || deadline.timeRemaining() > 2)) preloadImageName(allImageNames[k++]);
+          if (k < allImageNames.length) idle(step);
+        })();
+      }
 
       /* ---------- LINE LOOP (geometry updates only while camera is settled) ---------- */
       let lineLen = 0, targetLen = 0, entryReveal = 0, entryTarget = 0;
@@ -1916,10 +2083,19 @@
         if (isMobile()) return { tl: [50, 80], br: [NAV_RESERVE + 6, Math.min(window.innerHeight * 0.42, 300)] };
         return { tl: [cardRightPx + 24, 36], br: [NAV_RESERVE + 12, 36] };
       }
+      /* Resolve the geographic focus (coords + zoom) for a scene: a detached
+         stop resolves to DETACHED; point/image/bypass resolve to their route
+         waypoint; overview/entry have no single point. */
+      function focusOf(sc) {
+        if (!sc) return null;
+        if (sc.detach) return DETACHED[sc.detach];
+        if (sc.point != null) return storyData[sc.point];
+        return null;
+      }
       function frameScene(i, animate, dur) {
         const sc = scenes[i];
-        if (sc.type === 'point' || sc.type === 'image') {   // image scenes hold on their waypoint
-          const s = storyData[sc.point];
+        if (sc.type === 'point' || sc.type === 'image' || sc.type === 'detached') {   // image / detached scenes hold on a fixed point
+          const s = focusOf(sc);
           const c = focusToCenter(s.coordinates[0], s.coordinates[1], s.zoom);
           if (animate) { flying = true; map.flyTo(c, s.zoom, { duration: dur }); }
           else map.setView(c, s.zoom, { animate: false });
@@ -1949,9 +2125,10 @@
       function durFor(prev, i) {
         const a = scenes[prev], b = scenes[i];
         if (!a) return 1.4;
-        if (b.type === 'image' && a.point === b.point) return 0.7;   // photo over the same view
-        if (a.type !== 'point' || b.type !== 'point') return 1.4;
-        const d = map.distance(storyData[a.point].coordinates, storyData[b.point].coordinates);
+        if (b.type === 'image' && a.point === b.point && !!a.detach === !!b.detach) return 0.7;   // photo over the same view
+        const ca = focusOf(a), cb = focusOf(b);
+        if (!ca || !cb) return 1.4;
+        const d = map.distance(ca.coordinates, cb.coordinates);
         return d > 6000 ? 2.0 : d > 2500 ? 1.5 : 1.1;
       }
 
@@ -1962,20 +2139,27 @@
         const sc = scenes[i];
 
         const isContextImage = (sections[i].dataset.type === 'context-image');
-        const hasPoint = (sc.type === 'point' || sc.type === 'image' || sc.type === 'bypass');
+        // carriesLine: scenes that anchor a line length via sc.point (detached stops
+        // and bypass scenes keep the line where their waypoint left it, so the
+        // orange path never blinks out). routeActive: scenes that light up a
+        // numbered route marker.
+        const carriesLine = (sc.type === 'point' || sc.type === 'image' || sc.type === 'detached' || sc.type === 'bypass');
+        const routeActive = ((sc.type === 'point' || sc.type === 'image' || sc.type === 'bypass') && !sc.detach);
         document.body.classList.toggle('is-overview', sc.type === 'overview');
         document.body.classList.toggle('is-entry', sc.type === 'entry');
         document.body.classList.toggle('is-image', sc.type === 'image' || isContextImage);
         document.body.classList.toggle('is-bypass', sc.type === 'bypass');
+        document.body.classList.toggle('is-detached', sc.type === 'detached');
         document.body.classList.toggle('entry-shown', i >= entrySceneIdx);   // crossing paths persist from the entry scene onward
         document.body.classList.toggle('show-bypass-mendon', mendonBypassIdx >= 0 && i >= mendonBypassIdx);
         document.body.classList.toggle('show-bypass-alikadam', alikadamBypassIdx >= 0 && i >= alikadamBypassIdx);
-        const activePt = hasPoint ? sc.point : (sc.type === 'entry' ? 0 : -1);
+        const activePt = routeActive ? sc.point : (sc.type === 'entry' ? 0 : -1);
         markers.forEach((m, k) => { const el = m.getElement(); if (el) { el.classList.toggle('active', k === activePt); m.setZIndexOffset(k === activePt ? 1000 : 0); } });
+        if (fatraMarker) { const el = fatraMarker.getElement(); if (el) el.classList.toggle('active', sc.type === 'detached'); fatraMarker.setZIndexOffset(sc.type === 'detached' ? 1000 : 0); }
         cards.forEach((c, k) => { if (c) c.classList.toggle('is-active', k === i); });
         updateNav();
 
-        targetLen = hasPoint ? waypointLen[sc.point] : ((sc.type === 'overview' && sc.variant === 'outro') ? totalMeters : 0);
+        targetLen = carriesLine ? waypointLen[sc.point] : ((sc.type === 'overview' && sc.variant === 'outro') ? totalMeters : 0);
         entryTarget = i >= entrySceneIdx ? 1 : 0;   // keep the two crossing paths drawn for the rest of the journey
 
         // Handle carousel autoplay
@@ -2110,6 +2294,7 @@
       if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
       function boot() {
         window.scrollTo(0, 0);
+        useSmallestImages();          // pin all photos to the smallest variant before any lazy fetch
         initCarousel();
         map.invalidateSize({ animate: false });
         measureCard();
@@ -2126,6 +2311,7 @@
         map.invalidateSize({ animate: false });
         measureCard();
         if (currentScene >= 0) { frameScene(currentScene, false); flying = false; lineLen = targetLen; entryReveal = entryTarget; drawLine(); drawEntry(); }
+        idlePreloadAllImages();   // background-fetch every photo once the page is settled
       });
 
       /* ---------- LIGHTBOX (click any photo to view it large; × / backdrop / Esc to close) ---------- */
@@ -2135,9 +2321,9 @@
       function openLightbox(name, cap) {
         if (!name) return;
         stopCarouselAutoplay();
-        lightboxImg.srcset = 'images/' + name + '_sm.avif 800w, images/' + name + '_md.avif 1600w, images/' + name + '_lg.avif 2560w';
-        lightboxImg.sizes = '96vw';
-        lightboxImg.src = 'images/' + name + '_lg.avif';
+        lightboxImg.removeAttribute('srcset');
+        lightboxImg.removeAttribute('sizes');
+        lightboxImg.src = 'images/' + name + '_md.avif';   // on-demand enlarge: one mid-size fetch, not the heavy lg
         lightboxImg.alt = cap || '';
         lightboxCap.textContent = cap || '';
         lightbox.classList.add('open');
