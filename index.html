@@ -2025,6 +2025,7 @@
         boxZoom: false, keyboard: false, dragging: false,
         zoomSnap: 0, zoomDelta: 0.5, minZoom: 10, maxZoom: 17
       }).setView(converge, 12);
+      map.attributionControl.setPrefix(false);
       if (!isMobile()) map.dragging.enable();   // drag to explore (desktop; mobile keeps vertical scroll)
 
       const TILE_TEMPLATES = [
