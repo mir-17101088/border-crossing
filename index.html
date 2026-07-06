@@ -1250,6 +1250,25 @@
         opacity: 1;
       }
     }
+
+    /* ===== BACK TO TOP ===== */
+    #back-to-top {
+      position: fixed;
+      bottom: 14px;
+      right: 14px;
+      z-index: 10000;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity var(--t-fast) var(--ease), transform var(--t-fast) var(--ease), background-color var(--t-fast), border-color var(--t-fast);
+    }
+    #back-to-top.is-visible {
+      opacity: 1;
+      pointer-events: auto;
+    }
+    #back-to-top svg {
+      width: 20px;
+      height: 20px;
+    }
   </style>
 </head>
 
@@ -1681,6 +1700,12 @@
       <figcaption id="lightbox-cap"></figcaption>
     </figure>
   </div>
+
+  <button id="back-to-top" class="ctrl-btn" aria-label="Back to top" title="Back to top">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <path d="M18 15l-6-6-6 6" />
+    </svg>
+  </button>
 
   <script>
     (function () {
@@ -2359,9 +2384,26 @@
         const y = window.scrollY || document.documentElement.scrollTop;
         const h = document.documentElement.scrollHeight - window.innerHeight;
         progressBar.style.width = (h > 0 ? (y / h) * 100 : 0) + '%';
+        
+        const btt = document.getElementById('back-to-top');
+        if (btt) {
+          if (y > 300) {
+            btt.classList.add('is-visible');
+          } else {
+            btt.classList.remove('is-visible');
+          }
+        }
+        
         scrollTicking = false;
       }
       window.addEventListener('scroll', () => { if (!scrollTicking) { scrollTicking = true; requestAnimationFrame(readScroll); } }, { passive: true });
+
+      const bttBtn = document.getElementById('back-to-top');
+      if (bttBtn) {
+        bttBtn.addEventListener('click', () => {
+          window.scrollTo({ top: 0, behavior: prefersReduced ? 'auto' : 'smooth' });
+        });
+      }
 
       /* ---------- RESIZE ---------- */
       let resizeTimer = null;
