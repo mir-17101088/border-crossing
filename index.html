@@ -10,16 +10,18 @@
     content="An interactive map tracing a documented Rohingya border-crossing route from the zero-line near Fatra Para down to Alikadam Bazar.">
   <meta name="author" content="Mir">
   <meta name="robots" content="noindex">
-  
+
   <!-- Open Graph / Social Media Meta Tags -->
   <meta property="og:type" content="article">
   <meta property="og:title" content="Traces in the Dark: The Alikadam Crossing Corridor">
-  <meta property="og:description" content="An interactive map tracing a documented Rohingya border-crossing route from the zero-line near Fatra Para down to Alikadam Bazar.">
+  <meta property="og:description"
+    content="An interactive map tracing a documented Rohingya border-crossing route from the zero-line near Fatra Para down to Alikadam Bazar.">
   <meta property="og:image" content="images/og_image.JPG">
-  
+
   <meta property="twitter:card" content="summary_large_image">
   <meta property="twitter:title" content="Traces in the Dark: The Alikadam Crossing Corridor">
-  <meta property="twitter:description" content="An interactive map tracing a documented Rohingya border-crossing route from the zero-line near Fatra Para down to Alikadam Bazar.">
+  <meta property="twitter:description"
+    content="An interactive map tracing a documented Rohingya border-crossing route from the zero-line near Fatra Para down to Alikadam Bazar.">
   <meta property="twitter:image" content="images/og_image.JPG">
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -813,6 +815,7 @@
       gap: 8px;
     }
 
+
     /* ===== STORY TRACK ===== */
     #story-track {
       position: relative;
@@ -1079,9 +1082,7 @@
         padding: 10px 12px 12px;
       }
 
-      .story-section.intro .photo-card figcaption {
-        display: none;
-      }
+
 
       .carousel-btn {
         width: 28px;
@@ -1109,6 +1110,112 @@
       }
     }
 
+    /* ===== AUDIO BUTTON ===== */
+    .audio-btn {
+      position: fixed;
+      bottom: 14px;
+      left: 14px;
+      z-index: 50;
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.4);
+      transform: scale(1);
+      transition: transform var(--t-fast) var(--ease), background var(--t-fast), border-color var(--t-fast), color var(--t-fast);
+      -webkit-tap-highlight-color: transparent;
+      padding: 0;
+    }
+
+    .audio-btn:hover {
+      background: rgba(245, 158, 11, 0.16);
+      border-color: rgba(245, 158, 11, 0.55);
+      color: #fff;
+    }
+
+    .audio-btn.playing {
+      transform: scale(1.08);
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    .audio-btn svg {
+      width: 20px;
+      height: 20px;
+      position: absolute;
+      transition: opacity var(--t-fast);
+    }
+
+    .audio-btn .icon-play {
+      opacity: 1;
+      margin-left: 2px;
+    }
+
+    .audio-btn .icon-pause-static {
+      opacity: 0;
+    }
+
+    .audio-btn.playing .icon-play {
+      opacity: 0;
+    }
+
+    .audio-btn .icon-wave {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 3px;
+      width: 20px;
+      height: 20px;
+      position: absolute;
+      opacity: 0;
+      transition: opacity var(--t-fast);
+    }
+
+    .audio-btn.playing .icon-wave {
+      opacity: 1;
+    }
+
+    .audio-btn .icon-wave .bar {
+      width: 3px;
+      height: 12px;
+      background: currentColor;
+      border-radius: 1.5px;
+      transform-origin: center;
+      animation: none;
+    }
+
+    .audio-btn.playing .icon-wave .bar {
+      animation: wave 1s ease-in-out infinite alternate;
+    }
+
+    .audio-btn.playing .icon-wave .bar:nth-child(2) {
+      animation-delay: 0.2s;
+    }
+
+    .audio-btn.playing .icon-wave .bar:nth-child(3) {
+      animation-delay: 0.4s;
+    }
+
+    @keyframes wave {
+      0% {
+        transform: scaleY(0.4);
+        opacity: 0.7;
+      }
+
+      100% {
+        transform: scaleY(1);
+        opacity: 1;
+      }
+    }
+
     @media (prefers-reduced-motion: reduce) {
       html {
         scroll-behavior: auto;
@@ -1128,6 +1235,19 @@
 
       .flow-dash {
         display: none;
+      }
+
+      .audio-btn.playing {
+        transform: scale(1);
+      }
+
+      .audio-btn.playing .icon-wave {
+        display: none;
+        opacity: 0;
+      }
+
+      .audio-btn.playing .icon-pause-static {
+        opacity: 1;
       }
     }
   </style>
@@ -1178,6 +1298,21 @@
       </svg>
     </button>
   </div>
+
+  <audio id="story-audio" src="story_audio.mp3" preload="metadata"></audio>
+  <button id="audio-btn" class="audio-btn" type="button" aria-label="Play audio">
+    <svg class="icon-play" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+      <path d="M8 5v14l11-7z" />
+    </svg>
+    <div class="icon-wave" aria-hidden="true">
+      <div class="bar"></div>
+      <div class="bar"></div>
+      <div class="bar"></div>
+    </div>
+    <svg class="icon-pause-static" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+      <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z" />
+    </svg>
+  </button>
 
   <main id="story-track">
 
@@ -2364,6 +2499,31 @@
         if (t === lightbox || t.id === 'lightbox-close' || (t.classList && t.classList.contains('lightbox-fig'))) closeLightbox();
       });
       document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && lightbox.classList.contains('open')) closeLightbox(); });
+
+      /* ---------- AUDIO LOGIC ---------- */
+      const audio = document.getElementById('story-audio');
+      const audioBtn = document.getElementById('audio-btn');
+
+      audioBtn.addEventListener('click', async () => {
+        if (audio.paused) {
+          try {
+            await audio.play();
+            audioBtn.classList.add('playing');
+            audioBtn.setAttribute('aria-label', 'Pause audio');
+          } catch (err) {
+            console.error("Audio playback failed:", err);
+          }
+        } else {
+          audio.pause();
+          audioBtn.classList.remove('playing');
+          audioBtn.setAttribute('aria-label', 'Play audio');
+        }
+      });
+
+      audio.addEventListener('ended', () => {
+        audioBtn.classList.remove('playing');
+        audioBtn.setAttribute('aria-label', 'Play audio');
+      });
     })();
   </script>
 </body>
