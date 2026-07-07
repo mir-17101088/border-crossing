@@ -940,6 +940,26 @@
       margin-right: 2px;
     }
 
+    .scroll-indicator {
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      color: var(--text-faint);
+      animation: bob 2s ease-in-out infinite;
+      margin-top: 16px;
+      padding: 0;
+    }
+
+    .scroll-indicator:hover {
+      color: var(--text);
+    }
+    
+    .scroll-indicator svg {
+      width: 24px;
+      height: 24px;
+      display: block;
+    }
+
     @keyframes bob {
 
       0%,
@@ -1119,16 +1139,16 @@
       width: 44px;
       height: 44px;
       border-radius: 50%;
-      background: var(--card-bg);
-      border: 1px solid var(--card-border);
-      color: var(--text);
+      background: var(--accent);
+      border: 1px solid var(--accent);
+      color: var(--ink-deep);
       display: flex;
       align-items: center;
       justify-content: center;
       cursor: pointer;
       backdrop-filter: blur(8px);
       -webkit-backdrop-filter: blur(8px);
-      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.4);
+      box-shadow: 0 6px 16px rgba(245, 158, 11, 0.4);
       transform: scale(1);
       transition: transform var(--t-fast) var(--ease), background var(--t-fast), border-color var(--t-fast), color var(--t-fast);
       -webkit-tap-highlight-color: transparent;
@@ -1136,15 +1156,16 @@
     }
 
     .audio-btn:hover {
-      background: rgba(245, 158, 11, 0.16);
-      border-color: rgba(245, 158, 11, 0.55);
-      color: #fff;
+      transform: scale(1.05);
+      box-shadow: 0 8px 20px rgba(245, 158, 11, 0.6);
     }
 
     .audio-btn.playing {
-      transform: scale(1.08);
+      background: var(--card-bg);
       border-color: var(--accent);
       color: var(--accent);
+      transform: scale(1.08);
+      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.5);
     }
 
     .audio-btn svg {
@@ -1229,7 +1250,8 @@
 
       .custom-marker.active .mk-pulse,
       body.is-entry .entry-marker .mk-pulse,
-      .brand .live-dot {
+      .brand .live-dot,
+      .scroll-indicator {
         animation: none;
       }
 
@@ -1261,10 +1283,12 @@
       pointer-events: none;
       transition: opacity var(--t-fast) var(--ease), transform var(--t-fast) var(--ease), background-color var(--t-fast), border-color var(--t-fast);
     }
+
     #back-to-top.is-visible {
       opacity: 1;
       pointer-events: auto;
     }
+
     #back-to-top svg {
       width: 20px;
       height: 20px;
@@ -1294,7 +1318,7 @@
       <div class="row"><span class="swatch border"></span><span>BD–Myanmar border</span></div>
       <div class="row"><span class="swatch active"></span><span>Active transit path</span></div>
 
-      <div class="row"><span class="swatch bypass"></span><span>Checkpost bypass</span></div>
+      <div class="row"><span class="swatch bypass"></span><span>Checkpoint bypass</span></div>
     </div>
   </div>
 
@@ -1319,7 +1343,7 @@
   </div>
 
   <audio id="story-audio" src="story_audio.mp3" preload="metadata"></audio>
-  <button id="audio-btn" class="audio-btn" type="button" aria-label="Play audio">
+  <button id="audio-btn" class="audio-btn" type="button" aria-label="Play audio" title="Listen to the Story">
     <svg class="icon-play" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
       <path d="M8 5v14l11-7z" />
     </svg>
@@ -1347,6 +1371,11 @@
             <span><em>Reporting:</em> Sajjad Hossain</span>
             <span><em>Visualization:</em> Mir Rownak</span>
           </div>
+          <button class="scroll-indicator" type="button" aria-label="Scroll to begin story">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M6 9l6 6 6-6" />
+            </svg>
+          </button>
         </article>
       </div>
     </section>
@@ -1485,7 +1514,7 @@
           <p class="context-text">On May 20, 2026, The Daily Star followed one such route. A group of 12 Rohingya,
             including three women, entered Alikadam in Bandarban from Myanmar. The route is about 54 kilometres long —
             hill streams, river crossings, forest paths and paved roads.</p>
-          <p class="highlight-text">Using the map, we traced how they travelled from the border area to Alikadam Bazar.
+          <p class="highlight-text">Using the map, we show how they travelled from the border area to Alikadam Bazar.
           </p>
         </article>
       </div>
@@ -1702,7 +1731,8 @@
   </div>
 
   <button id="back-to-top" class="ctrl-btn" aria-label="Back to top" title="Back to top">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"
+      stroke-linejoin="round" aria-hidden="true">
       <path d="M18 15l-6-6-6 6" />
     </svg>
   </button>
@@ -1721,7 +1751,7 @@
         { title: "Poamuhuri BGB Checkpoint", coordinates: [21.46788877604238, 92.41941102957639], zoom: 13.4 },
         { title: "Mendon Para Army Post", coordinates: [21.54120837131384, 92.39942283510649], zoom: 13.0 },
         { title: "Krilai Para BGB Post", coordinates: [21.55691272414940, 92.38812766072461], zoom: 13.0 },
-        { title: "Alikadam Bazar Checkpost", coordinates: [21.64423466940239, 92.31235817707524], zoom: 13.4 },
+        { title: "Alikadam Bazar Checkpoint", coordinates: [21.64423466940239, 92.31235817707524], zoom: 13.4 },
         { title: "Mongcha Para", coordinates: [21.64883301228137, 92.30339117324041], zoom: 14.4 }
       ];
       const routeCoords = storyData.map(s => s.coordinates);
@@ -1927,7 +1957,7 @@
          leave the waypoint out — it just shows its story card. Scenes/sections
          are generated from this; the map, reveal and nav all adapt automatically. */
       const IMG_SIZES = 'images/@_sm.avif 800w, images/@_md.avif 1600w, images/@_lg.avif 2560w';
-      function img(name, cap) { return { kind: 'image', name: name, cap: cap }; }
+      function img(name, cap, before) { return { kind: 'image', name: name, cap: cap, before: before }; }
       function bypass(which) { return { kind: 'bypass', which: which }; }
       function esc(t) { return String(t).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
 
@@ -1938,17 +1968,17 @@
         4: [img('dori_para', 'Darimukh Para, where the paved road finally begins.')],
         6: [bypass('mendon')],
         8: [bypass('alikadam'), img('mongcha_para_bypass', 'Rohingya people cross the Matamuhuri River near Alikadam Bazar, avoiding the Bandarban army post, to enter the market.')],
-        9: [img('mongcha_para', 'Mongcha Para, the final destination, where the biker dropped off the passengers after they crossed the river.')]
+        9: [img('mongcha_para', 'Mongcha Para, the final destination, where the biker dropped off the passengers after they crossed the river.', true)]
       };
       const BYPASS_INFO = {
         mendon: {
           eyebrow: 'The Bypass', title: 'Slipping Past Mendon Para',
-          body: 'As the motorbike rolls straight through the army checkpost, its passengers have already vanished — peeling onto this narrow footpath that skirts the post and rejoins the road on the far side.',
+          body: 'As the motorbike rolls straight through the army checkpoint, its passengers have already vanished — peeling onto this narrow footpath that skirts the post and rejoins the road on the far side.',
           coords: [[21.542579, 92.399474], [21.542327, 92.399015], [21.542166, 92.398527], [21.541939, 92.398068], [21.541899, 92.397896]], maxZoom: 16.4
         },
         alikadam: {
-          eyebrow: 'The Final Bypass', title: 'Around the Last Checkpost',
-          body: 'Rather than face the Alikadam Bazar checkpost head-on, the group breaks away onto a long footpath detour — looping through Nayapara and Mongcha Para to slip into the bazaar unseen.',
+          eyebrow: 'The Final Bypass', title: 'Around the Last Checkpoint',
+          body: 'Rather than face the Alikadam Bazar checkpoint head-on, the group breaks away onto a long footpath detour — looping through Nayapara and Mongcha Para to slip into the bazaar unseen.',
           coords: [[21.64064, 92.312391], [21.640641, 92.311471], [21.640748, 92.310414], [21.640891, 92.308945], [21.640982, 92.307652], [21.640598, 92.306868], [21.639925, 92.306535], [21.638996, 92.30581], [21.638398, 92.305597], [21.638271, 92.304226], [21.638178, 92.302736], [21.638489, 92.301759], [21.639364, 92.301585], [21.639629, 92.300708], [21.639957, 92.299774], [21.641416, 92.300503], [21.642446, 92.3009], [21.642605, 92.300212], [21.644259, 92.300336], [21.645842, 92.300568], [21.646952, 92.300549], [21.647768, 92.300027], [21.648771, 92.299492], [21.649156, 92.299328], [21.649207, 92.299963], [21.649131, 92.300693], [21.649043, 92.301744], [21.649135, 92.302565], [21.648911, 92.303161], [21.648893, 92.303435]], maxZoom: 14.6
         }
       };
@@ -1982,10 +2012,15 @@
         document.querySelectorAll('.story-section[data-type="point"]').forEach(s => { bySection[+s.dataset.point] = s; });
         Object.keys(EXTRAS).forEach(key => {
           let anchor = bySection[+key];
+          let beforeAnchor = anchor;
           if (!anchor) return;
           EXTRAS[+key].forEach(ex => {
             const sec = ex.kind === 'image' ? makeImageSection(ex, +key) : makeBypassSection(ex, +key);
-            anchor.after(sec); anchor = sec;
+            if (ex.before) {
+              beforeAnchor.before(sec);
+            } else {
+              anchor.after(sec); anchor = sec;
+            }
           });
         });
         const secs = Array.from(document.querySelectorAll('.story-section'));
@@ -2385,7 +2420,7 @@
         const y = window.scrollY || document.documentElement.scrollTop;
         const h = document.documentElement.scrollHeight - window.innerHeight;
         progressBar.style.width = (h > 0 ? (y / h) * 100 : 0) + '%';
-        
+
         const btt = document.getElementById('back-to-top');
         if (btt) {
           if (y > 300) {
@@ -2394,7 +2429,7 @@
             btt.classList.remove('is-visible');
           }
         }
-        
+
         scrollTicking = false;
       }
       window.addEventListener('scroll', () => { if (!scrollTicking) { scrollTicking = true; requestAnimationFrame(readScroll); } }, { passive: true });
@@ -2567,6 +2602,11 @@
         audioBtn.classList.remove('playing');
         audioBtn.setAttribute('aria-label', 'Play audio');
       });
+
+      const scrollIndicator = document.querySelector('.scroll-indicator');
+      if (scrollIndicator) {
+        scrollIndicator.addEventListener('click', () => goToScene(1));
+      }
     })();
   </script>
 </body>
