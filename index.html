@@ -2587,12 +2587,26 @@
       const audio = document.getElementById('story-audio');
       const audioBtn = document.getElementById('audio-btn');
 
+      // Theatrical opener: the first time the audio successfully starts, glide the
+      // reader from the intro into scene 1 — but only if they're still parked at the
+      // very top (currentScene === 0). If they've already scrolled elsewhere, we
+      // leave their position alone. One-shot per page load. (Reuses goToScene, so it
+      // respects prefers-reduced-motion.)
+      let hasAutoScrolled = false;
+
       audioBtn.addEventListener('click', async () => {
         if (audio.paused) {
           try {
             await audio.play();
             audioBtn.classList.add('playing');
             audioBtn.setAttribute('aria-label', 'Pause audio');
+
+            if (!hasAutoScrolled) {
+              hasAutoScrolled = true;          // consume the one-shot on first successful play
+              if (currentScene === 0) goToScene(1);   // ...but only nudge if still at the top
+              // Prefer "first play *while at the top*" instead? Move the two lines
+              // above into: if (currentScene === 0) { hasAutoScrolled = true; goToScene(1); }
+            }
           } catch (err) {
             console.error("Audio playback failed:", err);
           }
